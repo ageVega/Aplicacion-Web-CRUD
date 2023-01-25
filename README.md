@@ -14,3 +14,12 @@ pip 22.3.1 from C:\Users\ageve\AppData\Local\Programs\Python\Python310\lib\site-
 ## Crear entorno virtual 
 
 $ pip install virtualenv
+
+$ python -m virtualenv venv
+
+F1 --> Python: Select Interpreter --> .\venv\Scripts\python.exe --> New terminal
+
+## Instalar modulos en entorno virtual 
+
+$ pip install flask
+
