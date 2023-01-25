@@ -19,7 +19,11 @@ $ python -m virtualenv venv
 
 F1 --> Python: Select Interpreter --> .\venv\Scripts\python.exe --> New terminal
 
-## Instalar modulos en entorno virtual 
+## Instalar modulos de python en entorno virtual 
 
 $ pip install flask
+
+Instalar postgres o $ sudo apt install libpq-dev
+
+$ pip install psycopg2 // Libreria para comunicar nuestra aplicacion python con postgres
 
