@@ -13,16 +13,26 @@ def get_connection():
     conn = connect(host=host, port=port, dbname=dbname, user=username, password=password)
     return conn
 
-@app.get('/')
-def home():
-    conn = get_connection()
-    cur = conn.cursor()
+@app.get('/api/users')
+def get_users():
+    return 'getting users'
 
-    cur.execute("SELECT 1 + 1")
-    result = cur.fetchone()
+@app.post('/api/users')
+def create_user():
+    return 'creating users'
 
-    print(result)
-    return 'Hello World!'
+@app.delete('/api/users/1')
+def delete_user():
+    return 'deleting users'
+
+@app.put('/api/users/1')
+def update_user():
+    return 'updating users'
+
+@app.get('/api/users/1')
+def get_user():
+    return 'getting user 1'
+
 
 if __name__ == '__main__':
     app.run(debug=True)
