@@ -20,7 +20,16 @@ def get_connection():
 # Get usuarios
 @app.get('/api/users')
 def get_users():
-    return 'getting users'
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+
+    cur.execute('SELECT * FROM users')
+    users = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return jsonify(users)
 
 # Create usuario
 @app.post('/api/users')
