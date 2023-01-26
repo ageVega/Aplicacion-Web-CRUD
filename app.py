@@ -64,9 +64,21 @@ def update_user():
     return 'updating users'
 
 # Get usuario
-@app.get('/api/users/1')
-def get_user():
-    return 'getting user 1'
+@app.get('/api/users/<id>')
+def get_user(id):
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+
+    cur.execute('SELECT * FROM users WHERE id = %s', (id,))
+    user = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    if user is None:
+        return jsonify({'message': 'User not found'}), 404
+
+    return jsonify(user)
 
 
 if __name__ == '__main__':
