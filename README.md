@@ -29,6 +29,8 @@ $ pip install psycopg2 // Libreria para comunicar nuestra aplicacion python con 
 
 $ pip install cryptography
 
+$ pip install python-dotenv
+
 ## Llamadas a la API
 
 POST http://localhost:5000/api/users
@@ -37,3 +39,7 @@ POST http://localhost:5000/api/users
   "email": "agevega@gmail.com",
   "password": "erculotuyo13"
 }
+
+## Generar requirements.txt
+
+$ pip freeze > requirements.txt
