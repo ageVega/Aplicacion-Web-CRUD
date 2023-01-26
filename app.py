@@ -59,7 +59,7 @@ def delete_user(id):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
 
-    cur.execute('DELETE FROM users WHERE id = %s RETURNING * ', (id,))
+    cur.execute('DELETE FROM users WHERE id = %s RETURNING *', (id,))
     user = cur.fetchone()
 
     conn.commit()
@@ -75,7 +75,27 @@ def delete_user(id):
 # Edit usuario
 @app.put('/api/users/<id>')
 def update_user(id):
-    return 'updating users'
+    new_user = request.get_json()
+    username = new_user['username']
+    email = new_user['email']
+    password = Fernet(key).encrypt(bytes(new_user['password'], 'utf-8'))
+
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+
+    cur.execute('UPDATE users SET username = %s, email = %s, password = %s WHERE id = %s RETURNING *',
+                (username, email, password, id))
+    updated_user = cur.fetchone()
+
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    if updated_user is None:
+        return jsonify({'message': 'User not found'}), 404
+
+    return jsonify(updated_user)
 
 # Get usuario
 @app.get('/api/users/<id>')
