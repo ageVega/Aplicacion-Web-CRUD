@@ -27,3 +27,13 @@ Instalar postgres o $ sudo apt install libpq-dev
 
 $ pip install psycopg2 // Libreria para comunicar nuestra aplicacion python con postgres
 
+$ pip install cryptography
+
+## Llamadas a la API
+
+POST http://localhost:5000/api/users
+{
+  "username": "Agevega",
+  "email": "agevega@gmail.com",
+  "password": "erculotuyo13"
+}
