@@ -1,6 +1,8 @@
 # Aplicacion-Web-CRUD
 Ejemplo práctico en el que crearemos una web completa usando Python y JavaScript. Crearemos un Backend usando el Framework de Python Flask y el frontend lo crearemos usando Javascript puro (Vanilla Javascript) desde cero. Básicamente crearemos una REST API, más un frontend, y lo estilizaremos con bootstrap5.
 
+Tutorial: https://www.youtube.com/watch?v=Qqgry8mezC8&t=7506s
+
 # Notas
 
 ## Comprobar version de python y pip
