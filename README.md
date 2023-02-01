@@ -29,6 +29,8 @@ Instalar postgres o $ sudo apt install libpq-dev
 
 $ pip install psycopg2 // Libreria para comunicar nuestra aplicacion python con postgres
 
+$ pip install psycopg2-binary
+
 $ pip install cryptography
 
 $ pip install python-dotenv
