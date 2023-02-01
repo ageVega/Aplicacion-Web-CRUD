@@ -37,6 +37,8 @@ $ pip install python-dotenv
 
 $ pip install gunicorn
 
+$ pip install waitress
+
 ## Llamadas a la API
 
 POST http://localhost:5000/api/users
