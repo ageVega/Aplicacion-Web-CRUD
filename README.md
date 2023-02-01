@@ -33,6 +33,8 @@ $ pip install cryptography
 
 $ pip install python-dotenv
 
+$ pip install gunicorn
+
 ## Llamadas a la API
 
 POST http://localhost:5000/api/users
@@ -45,3 +47,7 @@ POST http://localhost:5000/api/users
 ## Generar requirements.txt
 
 $ pip freeze > requirements.txt
+
+## Instalar dependencias
+
+$ pip install -r requirements.txt
