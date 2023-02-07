@@ -68,7 +68,9 @@ async function reloadPage() {
 
 function renderTask(tareas) {
     taskList.innerHTML = '';
-    
+
+    tareas = sortTasks(tareas, true);
+
     tareas.forEach(tarea => {
         const taskItem = document.createElement('li');
         taskItem.classList = 'list-group-item list-group-item-dark my-2';
@@ -110,5 +112,17 @@ function renderTask(tareas) {
         });
 
         taskList.append(taskItem);
+    });
+}
+
+function sortTasks(tareas, sortByPriority = true) {
+    return tareas.sort((a, b) => {
+      if (sortByPriority) {
+        if (a.priority < b.priority) return -1;
+        if (a.priority > b.priority) return 1;
+      }
+      if (a.task < b.task) return -1;
+      if (a.task > b.task) return 1;
+      return 0;
     });
 }
