@@ -6,20 +6,12 @@ let tareas = [];
 let editing = false;
 let tareaId = null; 
 
-
-
-
-
 window.addEventListener('DOMContentLoaded', async () => {
     const response = await fetch("/api/tasks");
     const data = await response.json();
     tareas = data;
     renderTask(tareas);
 });
-
-
-
-
 
 taskForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -62,14 +54,17 @@ taskForm.addEventListener("submit", async (e) => {
         tareaId = null;
     }
 
-    renderTask(tareas);
+    reloadPage();
 
     taskForm.reset();
 });
 
-
-
-
+async function reloadPage() {
+    const response = await fetch("/api/tasks");
+    const data = await response.json();
+    tareas = data;
+    renderTask(tareas);
+}
 
 function renderTask(tareas) {
     taskList.innerHTML = '';
@@ -88,9 +83,6 @@ function renderTask(tareas) {
             <p>${tarea.task}</p>
         `;
 
-
-
-
         const btnDelete = taskItem.querySelector('.btn-delete');
 
         btnDelete.addEventListener("click", async () => {
@@ -103,9 +95,6 @@ function renderTask(tareas) {
 
             renderTask(tareas);
         });
-
-
-
 
         const btnEdit = taskItem.querySelector('.btn-edit');
 
@@ -120,9 +109,6 @@ function renderTask(tareas) {
             tareaId = data.id;
         });
 
-
-
         taskList.append(taskItem);
-
     });
 }
