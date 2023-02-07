@@ -1,7 +1,6 @@
-CREATE TABLE users (
+CREATE TABLE tasks (
     id SERIAL PRIMARY KEY NOT NULL,
-    username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
+    task VARCHAR(255) NOT NULL,
+    priority INTEGER CHECK (priority >= 1 AND priority <= 5) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
