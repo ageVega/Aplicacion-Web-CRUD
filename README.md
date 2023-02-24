@@ -55,3 +55,9 @@ $ pip freeze > requirements.txt
 ## Instalar dependencias
 
 $ pip install -r requirements.txt
+
+## Iniciar aplicacion
+
+* Copiar archivo .env
+
+* $ python app.py
