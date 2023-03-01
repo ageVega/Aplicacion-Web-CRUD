@@ -114,7 +114,7 @@ $ pip install -r requirements.txt
 $ pip freeze > requirements.txt
 ```
 
-# # Despliegue en AWS
+# Despliegue en AWS
 
 ## EC2 Autoscaling group + Load Balancer
 
