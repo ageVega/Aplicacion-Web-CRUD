@@ -87,10 +87,30 @@ $ pip freeze > requirements.txt
 # Llamadas a la API
 
 ```bash
-POST http://localhost:5000/api/users {
- "username": "Agevega",
- "email": "agevega@gmail.com",
- "password": "erculotuyo13"
+GET http://matrix.agevega.com/
+
+GET http://localhost:5000/api/tasks
+
+GET http://localhost:5000/api/tasks/<id>
+```
+
+```bash
+POST http://localhost:5000/api/tasks 
+{
+ "task": "dummy",
+ "priority": "1"
+}
+```
+
+```bash
+DELETE http://localhost:5000/api/tasks/<id>
+```
+
+```bash
+PUT http://localhost:5000/api/tasks/<id>
+{
+ "task": "dummy",
+ "priority": "2"
 }
 ```
 
@@ -98,17 +118,17 @@ POST http://localhost:5000/api/users {
 
 ## EC2 Autoscaling group + Load Balancer
 
-La aproximacion que vamos a seguir pasa por: 
+La aproximación que vamos a seguir pasa por: 
 
-1. Crear una plantilla de lanzamiento desde la cual se puedan generar instancias EC2 con la aplicacion operativa desde la creacion de la propia instancia.
+1. Crear una plantilla de lanzamiento desde la cual se puedan generar instancias EC2 con la aplicación operativa desde la creación de la propia instancia.
 
 2. Crear un grupo de autoscaling que se encargue de mantener siempre un servidor healthy levantado a partir de nuestra plantilla de lanzamiento.
    
-   1. Asociar un Target group a nuestro grupo de autoescalado
+   1. Asociar un Target group a nuestro grupo de autoescalado.
    
-   2. Apuntar con un Load Balancer a nuestro Target group para los protocolos HTTP y HTTPS (con certificado SSL/TLS)
+   2. Apuntar con un Load Balancer a nuestro Target group para los protocolos HTTP y HTTPS (con certificado SSL/TLS).
 
-3. Registrar un dominio y asociar un DNS al endpoint del Load Balancer
+3. Registrar un dominio y asociar un DNS al endpoint del Load Balancer.
 
 ### VPC
 
@@ -118,7 +138,7 @@ La aproximacion que vamos a seguir pasa por:
 | Bloque de CIDR IPv4                    | 10.X.0.0/16                                  |
 | Número de zonas de disponibilidad (AZ) | 3                                            |
 | Cantidad de subredes públicas          | 3                                            |
-| Cantidada de subredes privadas         | 3                                            |
+| Cantidad de subredes privadas          | 3                                            |
 | ****                                   | ****                                         |
 | **VPC**                                | **Su red virtual de AWS**                    |
 | ****                                   | Matrix-vpc                                   |
