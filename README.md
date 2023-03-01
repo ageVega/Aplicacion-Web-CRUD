@@ -16,6 +16,36 @@ Tutorial: https://www.youtube.com/watch?v=Qqgry8mezC8&t=7506s
 
 4. Acceder a través de http://<ip>:8080
 
+# Llamadas a la API
+
+```bash
+GET http://matrix.agevega.com/
+
+GET http://localhost:5000/api/tasks
+
+GET http://localhost:5000/api/tasks/<id>
+```
+
+```bash
+POST http://localhost:5000/api/tasks 
+{
+ "task": "dummy",
+ "priority": "1"
+}
+```
+
+```bash
+DELETE http://localhost:5000/api/tasks/<id>
+```
+
+```bash
+PUT http://localhost:5000/api/tasks/<id>
+{
+ "task": "dummy",
+ "priority": "2"
+}
+```
+
 # Instalacion de entorno
 
 ## Version de python
@@ -48,9 +78,9 @@ sudo apt install python3-pip
 $ pip install virtualenv
 
 $ python -m virtualenv venv
+```
 
 F1 --> Python: Select Interpreter --> .\venv\Scripts\python.exe --> New terminal
-```
 
 ### Instalar modulos de python en entorno virtual
 
@@ -84,37 +114,7 @@ $ pip install -r requirements.txt
 $ pip freeze > requirements.txt
 ```
 
-# Llamadas a la API
-
-```bash
-GET http://matrix.agevega.com/
-
-GET http://localhost:5000/api/tasks
-
-GET http://localhost:5000/api/tasks/<id>
-```
-
-```bash
-POST http://localhost:5000/api/tasks 
-{
- "task": "dummy",
- "priority": "1"
-}
-```
-
-```bash
-DELETE http://localhost:5000/api/tasks/<id>
-```
-
-```bash
-PUT http://localhost:5000/api/tasks/<id>
-{
- "task": "dummy",
- "priority": "2"
-}
-```
-
-# Despliegue en AWS
+# # Despliegue en AWS
 
 ## EC2 Autoscaling group + Load Balancer
 
@@ -267,7 +267,3 @@ python3 Aplicacion-Web-CRUD/app.py
 | Default SSL/TLS certificate            | matrix.agevega.com (Certificate ID: hash) |
 | **Security**                           | Edit                                      |
 | Security groups                        | Matrix                                    |
-
-
-
-
