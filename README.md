@@ -238,7 +238,7 @@ python3 Aplicacion-Web-CRUD/app.py
 
 ### Load balancer
 
-| Configuración del balanceador de carga | ********                                  |
+| Configuración del balanceador de carga | ****                                      |
 | -------------------------------------- | ----------------------------------------- |
 | **Listeners**                          | **Default routing rule**                  |
 | HTTP:80                                | **Forward to:** Matrix-AmoDeCasa          |
