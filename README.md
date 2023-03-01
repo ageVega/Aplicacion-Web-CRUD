@@ -152,22 +152,41 @@ La aproximacion que vamos a seguir pasa por:
 
 ### Plantilla de lanzamiento
 
-| Configuración de la plantilla                | ****                                                                              |
-| -------------------------------------------- | --------------------------------------------------------------------------------- |
-| Nombre de la plantilla de lanzamiento        | Matrix-AmoDeCasa                                                                  |
-| Descripción de la plantilla                  | Plantilla de instancias de aplicacion AmoDeCasa                                   |
-| Imagen de software (AMI)                     | Canonical, Ubuntu, 22.04 LTS                                                      |
-| Tipo de servidor virtual (tipo de instancia) | t2.micro                                                                          |
-| Par de claves (inicio de sesión)             | denver.pem                                                                        |
-| **Configuraciones de Red**                   | ********                                                                          |
-| Subred                                       | No incluir en la plantilla de lanzamiento                                         |
-| Firewall (grupos de seguridad)               | **Matrix**                                                                        |
-| **Configuración de Red Avanzada**            | **Agregue interfaz de red**                                                       |
-| Asignar automáticamente la IP pública        | Habilitar                                                                         |
-| ********                                     | ********                                                                          |
-| Volúmenes de EBS                             | 1 volúmen(es): 8 GiB                                                              |
-| **Detalles avanzados**                       | ********                                                                          |
-| Datos de usuario                             | ![](C:\Users\ageve\AppData\Roaming\marktext\images\2023-02-28-15-04-01-image.png) |
+| Configuración de la plantilla                | ****                                            |
+| -------------------------------------------- | ----------------------------------------------- |
+| Nombre de la plantilla de lanzamiento        | Matrix-AmoDeCasa                                |
+| Descripción de la plantilla                  | Plantilla de instancias de aplicacion AmoDeCasa |
+| Imagen de software (AMI)                     | Canonical, Ubuntu, 22.04 LTS                    |
+| Tipo de servidor virtual (tipo de instancia) | t2.micro                                        |
+| Par de claves (inicio de sesión)             | denver.pem                                      |
+| **Configuraciones de Red**                   | ********                                        |
+| Subred                                       | No incluir en la plantilla de lanzamiento       |
+| Firewall (grupos de seguridad)               | **Matrix**                                      |
+| **Configuración de Red Avanzada**            | **Agregue interfaz de red**                     |
+| Asignar automáticamente la IP pública        | Habilitar                                       |
+| ********                                     | ********                                        |
+| Volúmenes de EBS                             | 1 volúmen(es): 8 GiB                            |
+| **Detalles avanzados**                       | ********                                        |
+
+**Datos de usuario**
+
+```bash
+#!/bin/bash
+# UBUNTU PYTHON AMODECASA
+sudo su -
+apt update
+apt install python3-pip -y
+git clone https://github.com/ageVega/Aplicacion-Web-CRUD.git
+pip install -r Aplicacion-Web-CRUD/requirements.txt
+cat << EOT >> Aplicacion-Web-CRUD/.env
+DB_HOST=amodecasa-prod.cxfzg9i8xx8k.eu-west-1.rds.amazonaws.com
+DB_DATABASE=usersdb
+DB_PORT=5432
+DB_USER=T795dFhw39m
+DB_PASSWORD=cSCzo5HSAwJIN3hz4dvE
+EOT
+python3 Aplicacion-Web-CRUD/app.py
+```
 
 ### Grupo de Autoescalado
 
