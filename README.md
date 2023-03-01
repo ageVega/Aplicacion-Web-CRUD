@@ -86,12 +86,13 @@ $ pip freeze > requirements.txt
 
 # Llamadas a la API
 
-```json
+```bash
 POST http://localhost:5000/api/users {
  "username": "Agevega",
  "email": "agevega@gmail.com",
  "password": "erculotuyo13"
 }
+
 ```
 
 # Despliegue en AWS
@@ -221,7 +222,7 @@ python3 Aplicacion-Web-CRUD/app.py
 | Path                               | /        |
 | Port                               | 8080     |
 
-### **AWS Certificate Manager**
+### AWS Certificate Manager
 
 | Solicitar certificado público SSL/TLS | ********                  |
 | ------------------------------------- | ------------------------- |
