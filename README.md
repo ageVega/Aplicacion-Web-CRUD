@@ -1,18 +1,20 @@
 # Aplicacion-Web-CRUD
 
-Ejemplo práctico en el que crearemos una web completa usando Python y JavaScript. Crearemos un Backend usando el Framework de Python Flask y el frontend lo crearemos usando Javascript puro (Vanilla Javascript) desde cero. Básicamente crearemos una REST API, más un frontend, y lo estilizaremos con bootstrap5.
+Ejemplo práctico en el que crearemos una web completa usando Python y JavaScript. Crearemos un Backend usando el Framework de Python Flask y el frontend lo crearemos usando Javascript puro (Vanilla Javascript) desde cero. 
+
+Básicamente crearemos una REST API, más un frontend, y lo estilizaremos con bootstrap5.
 
 Tutorial: https://www.youtube.com/watch?v=Qqgry8mezC8&t=7506s
 
 # Iniciar aplicacion
 
-- Clonar repositorio
+1. Clonar repositorio
 
-- Copiar archivo .env
+2. Copiar archivo .env
 
-- $ python app.py
+3. $ python app.py
 
-- Acceder a traves de http://<ip>:8080
+4. Acceder a través de http://<ip>:8080
 
 # Instalacion de entorno
 
@@ -84,14 +86,149 @@ $ pip freeze > requirements.txt
 
 # Llamadas a la API
 
-> POST [http://localhost:5000/api/users](http://localhost:5000/api/users) {
->  "username": "Agevega",
->  "email": "[agevega@gmail.com](mailto:agevega@gmail.com)",
->  "password": "erculotuyo13"
-> }
-
-
+```json
+POST http://localhost:5000/api/users {
+ "username": "Agevega",
+ "email": "agevega@gmail.com",
+ "password": "erculotuyo13"
+}
+```
 
 # Despliegue en AWS
+
+## EC2 Autoscaling group + Load Balancer
+
+La aproximacion que vamos a seguir pasa por: 
+
+1. Crear una plantilla de lanzamiento desde la cual se puedan generar instancias EC2 con la aplicacion operativa desde la creacion de la propia instancia.
+
+2. Crear un grupo de autoscaling que se encargue de mantener siempre un servidor healthy levantado a partir de nuestra plantilla de lanzamiento.
+   
+   1. Asociar un Target group a nuestro grupo de autoescalado
+   
+   2. Apuntar con un Load Balancer a nuestro Target group para los protocolos HTTP y HTTPS (con certificado SSL/TLS)
+
+3. Registrar un dominio y asociar un DNS al endpoint del Load Balancer
+
+### VPC
+
+| Creación y configuración de VPC        | ****                                         |
+| -------------------------------------- | -------------------------------------------- |
+| Etiqueta Nombre                        | Matrix                                       |
+| Bloque de CIDR IPv4                    | 10.X.0.0/16                                  |
+| Número de zonas de disponibilidad (AZ) | 3                                            |
+| Cantidad de subredes públicas          | 3                                            |
+| Cantidada de subredes privadas         | 3                                            |
+| ********                               | ********                                     |
+| **VPC**                                | **Su red virtual de AWS**                    |
+| ********                               | Matrix-vpc                                   |
+| **Subredes (6)**                       | **Subredes dentro de esta VPC**              |
+| eu-west-1a                             | Matrix-subnet-public1-eu-west-1a             |
+| eu-west-1a                             | Matrix-subnet-private1-eu-west-1a            |
+| eu-west-1b                             | Matrix-subnet-public2-eu-west-1b             |
+| eu-west-1b                             | Matrix-subnet-private2-eu-west-1b            |
+| eu-west-1c                             | Matrix-subnet-public3-eu-west-1c             |
+| eu-west-1c                             | Matrix-subnet-private3-eu-west-1c            |
+| **Tablas de enrutamiento (4)**         | **Dirigir el tráfico de red a los recursos** |
+| Public subnets                         | Matrix-rtb-public                            |
+| Private subnet 1                       | Matrix-rtb-private1-eu-west-1a               |
+| Private subnet 2                       | Matrix-rtb-private2-eu-west-1b               |
+| Private subnet 3                       | Matrix-rtb-private3-eu-west-1c               |
+| **Conexiones de red (2)**              | **Conexiones a otras redes**                 |
+| Public subnets                         | Matrix-igw                                   |
+| Private subnets                        | Matrix-vpce-s3                               |
+
+### Grupo de seguridad
+
+| Configuración del grupo de seguridad | ****                                                                          |
+| ------------------------------------ | ----------------------------------------------------------------------------- |
+| Nombre del grupo de seguridad        | Matrix                                                                        |
+| Descripcion                          | Grupo de seguridad de pruebas que permite acceso total de entrada y de salida |
+| VPC                                  | **Seleccionar una VPC existente**                                             |
+| **Reglas de entrada**                | ********                                                                      |
+| Todo el tráfico                      | Anywhere-IPv4                                                                 |
+| **Reglas de salida**                 | ********                                                                      |
+| Todo el tráfico                      | Anywhere-IPv4                                                                 |
+
+### Plantilla de lanzamiento
+
+| Configuración de la plantilla                | ****                                                                              |
+| -------------------------------------------- | --------------------------------------------------------------------------------- |
+| Nombre de la plantilla de lanzamiento        | Matrix-AmoDeCasa                                                                  |
+| Descripción de la plantilla                  | Plantilla de instancias de aplicacion AmoDeCasa                                   |
+| Imagen de software (AMI)                     | Canonical, Ubuntu, 22.04 LTS                                                      |
+| Tipo de servidor virtual (tipo de instancia) | t2.micro                                                                          |
+| Par de claves (inicio de sesión)             | denver.pem                                                                        |
+| **Configuraciones de Red**                   | ********                                                                          |
+| Subred                                       | No incluir en la plantilla de lanzamiento                                         |
+| Firewall (grupos de seguridad)               | **Matrix**                                                                        |
+| **Configuración de Red Avanzada**            | **Agregue interfaz de red**                                                       |
+| Asignar automáticamente la IP pública        | Habilitar                                                                         |
+| ********                                     | ********                                                                          |
+| Volúmenes de EBS                             | 1 volúmen(es): 8 GiB                                                              |
+| **Detalles avanzados**                       | ********                                                                          |
+| Datos de usuario                             | ![](C:\Users\ageve\AppData\Roaming\marktext\images\2023-02-28-15-04-01-image.png) |
+
+### Grupo de Autoescalado
+
+| Configuración del grupo de Auto Scaling      | ********                                     |
+| -------------------------------------------- | -------------------------------------------- |
+| Nombre del grupo de Auto Scaling             | Matrix-AmoDeCasa                             |
+| Plantilla de lanzamiento                     | Matrix-AmoDeCasa                             |
+| VPC                                          | Matrix-vpc                                   |
+| Zonas de disponibilidad y subredes           | ********                                     |
+| ********                                     | Matrix-subnet-public1-eu-west-1a             |
+| ********                                     | Matrix-subnet-public2-eu-west-1b             |
+| ********                                     | Matrix-subnet-public3-eu-west-1c             |
+| Balance de carga                             | **Asociar a un nuevo balanceador de carga**  |
+| Tipo de balanceador de carga                 | Application Load Balancer                    |
+| Nombre del balanceador de carga              | Matrix-AmoDeCasa                             |
+| Esquema del balanceador de carga             | Internet-facing                              |
+| Agentes de escucha y direccionamiento        | HTTP / Puerto 8080                           |
+| Direccionamiento predeterminado (reenviar a) | **Crear un grupo de destino (Target group)** |
+| Nombre del grupo de destino nuevo            | Matrix-AmoDeCasa                             |
+| Comprobaciones de estado                     | EC2 / ELB                                    |
+| **Tamaño del grupo**                         | ********                                     |
+| Capacidad deseada                            | 1                                            |
+| Capacidad mínima                             | 1                                            |
+| Capacidad máxima                             | 1                                            |
+
+### Target Group
+
+| Configuración del grupo de destino | ******** |
+| ---------------------------------- | -------- |
+| Health check settings              | Edit     |
+| Protocol                           | HTTP     |
+| Path                               | /        |
+| Port                               | 8080     |
+
+### **AWS Certificate Manager**
+
+| Solicitar certificado público SSL/TLS | ********                  |
+| ------------------------------------- | ------------------------- |
+| Nombre de dominio completo            | matrix.agevega.com        |
+| **Nombre CNAME**                      | **Valor CNAME**           |
+| hash.matrix.agevega.com.              | hash.acm-validations.aws. |
+
+### Route 53 Añadir los registros CNAME
+
+| Nombre del registro          | Tipo de registro | Valor                         |
+| ---------------------------- | ---------------- | ----------------------------- |
+| matrix.agevega.com           | CNAME            | **LoadBalancer Endpoint**     |
+| **hash**.matrix.agevega.com. | CNAME            | **hash**.acm-validations.aws. |
+
+### Load balancer
+
+| Configuración del balanceador de carga | ********                                  |
+| -------------------------------------- | ----------------------------------------- |
+| **Listeners**                          | **Default routing rule**                  |
+| HTTP:80                                | **Forward to:** Matrix-AmoDeCasa          |
+| HTTPS:443                              | **Forward to:** Matrix-AmoDeCasa          |
+| Secure listener settings               | HTTPS Only                                |
+| Default SSL/TLS certificate            | matrix.agevega.com (Certificate ID: hash) |
+| **Security**                           | Edit                                      |
+| Security groups                        | Matrix                                    |
+
+
 
 
