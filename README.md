@@ -199,11 +199,11 @@ apt install python3-pip -y
 git clone https://github.com/ageVega/Aplicacion-Web-CRUD.git
 pip install -r Aplicacion-Web-CRUD/requirements.txt
 cat << EOT >> Aplicacion-Web-CRUD/.env
-DB_HOST=amodecasa-prod.cxfzg9i8xx8k.eu-west-1.rds.amazonaws.com
-DB_DATABASE=usersdb
-DB_PORT=5432
-DB_USER=T795dFhw39m
-DB_PASSWORD=cSCzo5HSAwJIN3hz4dvE
+DB_HOST=
+DB_DATABASE=
+DB_PORT=
+DB_USER=
+DB_PASSWORD=
 EOT
 python3 Aplicacion-Web-CRUD/app.py
 ```
