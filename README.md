@@ -86,11 +86,31 @@ $ pip freeze > requirements.txt
 
 # Llamadas a la API
 
-```json
-POST http://localhost:5000/api/users {
- "username": "Agevega",
- "email": "agevega@gmail.com",
- "password": "erculotuyo13"
+```bash
+GET http://matrix.agevega.com/
+
+GET http://localhost:5000/api/tasks
+
+GET http://localhost:5000/api/tasks/<id>
+```
+
+```bash
+POST http://localhost:5000/api/tasks 
+{
+ "task": "dummy",
+ "priority": "1"
+}
+```
+
+```bash
+DELETE http://localhost:5000/api/tasks/<id>
+```
+
+```bash
+PUT http://localhost:5000/api/tasks/<id>
+{
+ "task": "dummy",
+ "priority": "2"
 }
 ```
 
@@ -98,17 +118,17 @@ POST http://localhost:5000/api/users {
 
 ## EC2 Autoscaling group + Load Balancer
 
-La aproximacion que vamos a seguir pasa por: 
+La aproximación que vamos a seguir pasa por: 
 
-1. Crear una plantilla de lanzamiento desde la cual se puedan generar instancias EC2 con la aplicacion operativa desde la creacion de la propia instancia.
+1. Crear una plantilla de lanzamiento desde la cual se puedan generar instancias EC2 con la aplicación operativa desde la creación de la propia instancia.
 
 2. Crear un grupo de autoscaling que se encargue de mantener siempre un servidor healthy levantado a partir de nuestra plantilla de lanzamiento.
    
-   1. Asociar un Target group a nuestro grupo de autoescalado
+   1. Asociar un Target group a nuestro grupo de autoescalado.
    
-   2. Apuntar con un Load Balancer a nuestro Target group para los protocolos HTTP y HTTPS (con certificado SSL/TLS)
+   2. Apuntar con un Load Balancer a nuestro Target group para los protocolos HTTP y HTTPS (con certificado SSL/TLS).
 
-3. Registrar un dominio y asociar un DNS al endpoint del Load Balancer
+3. Registrar un dominio y asociar un DNS al endpoint del Load Balancer.
 
 ### VPC
 
@@ -118,10 +138,10 @@ La aproximacion que vamos a seguir pasa por:
 | Bloque de CIDR IPv4                    | 10.X.0.0/16                                  |
 | Número de zonas de disponibilidad (AZ) | 3                                            |
 | Cantidad de subredes públicas          | 3                                            |
-| Cantidada de subredes privadas         | 3                                            |
-| ********                               | ********                                     |
+| Cantidad de subredes privadas          | 3                                            |
+| ****                                   | ****                                         |
 | **VPC**                                | **Su red virtual de AWS**                    |
-| ********                               | Matrix-vpc                                   |
+| ****                                   | Matrix-vpc                                   |
 | **Subredes (6)**                       | **Subredes dentro de esta VPC**              |
 | eu-west-1a                             | Matrix-subnet-public1-eu-west-1a             |
 | eu-west-1a                             | Matrix-subnet-private1-eu-west-1a            |
@@ -145,9 +165,9 @@ La aproximacion que vamos a seguir pasa por:
 | Nombre del grupo de seguridad        | Matrix                                                                        |
 | Descripcion                          | Grupo de seguridad de pruebas que permite acceso total de entrada y de salida |
 | VPC                                  | **Seleccionar una VPC existente**                                             |
-| **Reglas de entrada**                | ********                                                                      |
+| **Reglas de entrada**                | ****                                                                          |
 | Todo el tráfico                      | Anywhere-IPv4                                                                 |
-| **Reglas de salida**                 | ********                                                                      |
+| **Reglas de salida**                 | ****                                                                          |
 | Todo el tráfico                      | Anywhere-IPv4                                                                 |
 
 ### Plantilla de lanzamiento
@@ -159,14 +179,14 @@ La aproximacion que vamos a seguir pasa por:
 | Imagen de software (AMI)                     | Canonical, Ubuntu, 22.04 LTS                    |
 | Tipo de servidor virtual (tipo de instancia) | t2.micro                                        |
 | Par de claves (inicio de sesión)             | denver.pem                                      |
-| **Configuraciones de Red**                   | ********                                        |
+| **Configuraciones de Red**                   | ****                                            |
 | Subred                                       | No incluir en la plantilla de lanzamiento       |
 | Firewall (grupos de seguridad)               | **Matrix**                                      |
 | **Configuración de Red Avanzada**            | **Agregue interfaz de red**                     |
 | Asignar automáticamente la IP pública        | Habilitar                                       |
-| ********                                     | ********                                        |
+| ****                                         | ****                                            |
 | Volúmenes de EBS                             | 1 volúmen(es): 8 GiB                            |
-| **Detalles avanzados**                       | ********                                        |
+| **Detalles avanzados**                       | ****                                            |
 
 **Datos de usuario**
 
@@ -190,15 +210,15 @@ python3 Aplicacion-Web-CRUD/app.py
 
 ### Grupo de Autoescalado
 
-| Configuración del grupo de Auto Scaling      | ********                                     |
+| Configuración del grupo de Auto Scaling      | ****                                         |
 | -------------------------------------------- | -------------------------------------------- |
 | Nombre del grupo de Auto Scaling             | Matrix-AmoDeCasa                             |
 | Plantilla de lanzamiento                     | Matrix-AmoDeCasa                             |
 | VPC                                          | Matrix-vpc                                   |
-| Zonas de disponibilidad y subredes           | ********                                     |
-| ********                                     | Matrix-subnet-public1-eu-west-1a             |
-| ********                                     | Matrix-subnet-public2-eu-west-1b             |
-| ********                                     | Matrix-subnet-public3-eu-west-1c             |
+| Zonas de disponibilidad y subredes           | ****                                         |
+| ****                                         | Matrix-subnet-public1-eu-west-1a             |
+| ****                                         | Matrix-subnet-public2-eu-west-1b             |
+| ****                                         | Matrix-subnet-public3-eu-west-1c             |
 | Balance de carga                             | **Asociar a un nuevo balanceador de carga**  |
 | Tipo de balanceador de carga                 | Application Load Balancer                    |
 | Nombre del balanceador de carga              | Matrix-AmoDeCasa                             |
@@ -207,23 +227,23 @@ python3 Aplicacion-Web-CRUD/app.py
 | Direccionamiento predeterminado (reenviar a) | **Crear un grupo de destino (Target group)** |
 | Nombre del grupo de destino nuevo            | Matrix-AmoDeCasa                             |
 | Comprobaciones de estado                     | EC2 / ELB                                    |
-| **Tamaño del grupo**                         | ********                                     |
+| **Tamaño del grupo**                         | ****                                         |
 | Capacidad deseada                            | 1                                            |
 | Capacidad mínima                             | 1                                            |
 | Capacidad máxima                             | 1                                            |
 
 ### Target Group
 
-| Configuración del grupo de destino | ******** |
-| ---------------------------------- | -------- |
-| Health check settings              | Edit     |
-| Protocol                           | HTTP     |
-| Path                               | /        |
-| Port                               | 8080     |
+| Configuración del grupo de destino | **** |
+| ---------------------------------- | ---- |
+| Health check settings              | Edit |
+| Protocol                           | HTTP |
+| Path                               | /    |
+| Port                               | 8080 |
 
-### **AWS Certificate Manager**
+### AWS Certificate Manager
 
-| Solicitar certificado público SSL/TLS | ********                  |
+| Solicitar certificado público SSL/TLS | ****                      |
 | ------------------------------------- | ------------------------- |
 | Nombre de dominio completo            | matrix.agevega.com        |
 | **Nombre CNAME**                      | **Valor CNAME**           |
@@ -238,7 +258,7 @@ python3 Aplicacion-Web-CRUD/app.py
 
 ### Load balancer
 
-| Configuración del balanceador de carga | ********                                  |
+| Configuración del balanceador de carga | ****                                      |
 | -------------------------------------- | ----------------------------------------- |
 | **Listeners**                          | **Default routing rule**                  |
 | HTTP:80                                | **Forward to:** Matrix-AmoDeCasa          |
