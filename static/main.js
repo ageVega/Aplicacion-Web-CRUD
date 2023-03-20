@@ -2,8 +2,21 @@ const taskForm = document.querySelector('#taskForm');
 const taskList = document.querySelector('#taskList');
 
 let tareas = [];
+
 let editing = false;
 let tareaId = null;
+
+
+function priorityText(priority) {
+    switch (parseInt(priority)) {
+        case 1: return "Crítica";
+        case 2: return "Urgente";
+        case 3: return "Importante";
+        case 4: return "Moderado";
+        case 5: return "Menor";
+        default: return "";
+    }
+}
 
 window.addEventListener('DOMContentLoaded', async () => {
     const response = await fetch('/api/tasks');
@@ -63,6 +76,7 @@ async function reloadPage() {
 
 function renderTask(tareas) {
     taskList.innerHTML = '';
+
     tareas = sortTasks(tareas, true);
 
     tareas.forEach(tarea => {
@@ -70,7 +84,7 @@ function renderTask(tareas) {
         taskItem.classList = 'list-group-item list-group-item-dark my-2';
         taskItem.innerHTML = `
             <header class="d-flex justify-content-between align-items-center">
-                <h3>${tarea.priority}</h3>
+                <h3>${tarea.priority}. ${priorityText(tarea.priority)}</h3>
                 <div>
                     <button class="btn-edit btn btn-secondary btn-sm">edit</button>
                     <button class="btn-delete btn btn-danger btn-sm">delete</button>
@@ -80,6 +94,7 @@ function renderTask(tareas) {
         `;
 
         const btnDelete = taskItem.querySelector('.btn-delete');
+
         btnDelete.addEventListener("click", async () => {
             const response = await fetch(`/api/tasks/${tarea.id}`, {
                 method: 'DELETE'
@@ -87,10 +102,12 @@ function renderTask(tareas) {
             const data = await response.json();
 
             tareas = tareas.filter(tarea => tarea.id !== data.id);
+
             renderTask(tareas);
         });
 
         const btnEdit = taskItem.querySelector('.btn-edit');
+
         btnEdit.addEventListener("click", async () => {
             const response = await fetch(`/api/tasks/${tarea.id}`);
             const data = await response.json();
