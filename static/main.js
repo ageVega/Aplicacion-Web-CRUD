@@ -1,3 +1,4 @@
+// main.js
 const taskForm = document.querySelector('#taskForm');
 const taskList = document.querySelector('#taskList');
 
