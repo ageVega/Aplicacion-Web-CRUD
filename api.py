@@ -2,6 +2,7 @@
 import os
 from psycopg2 import connect, extras
 from flask import Blueprint, jsonify, request
+from flask_login import UserMixin
 
 api = Blueprint('api', __name__)
 
@@ -15,6 +16,13 @@ password = os.environ.get('DB_PASSWORD')
 def get_connection():
     conn = connect(host=host, port=port, dbname=dbname, user=username, password=password)
     return conn
+
+# Clase de usuario para flask-login
+class User(UserMixin):
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
 
 @api.route('/api/tasks', methods=['GET'])
 def get_tasks():
@@ -105,3 +113,8 @@ def get_task(id):
         return jsonify({'message': 'Task not found'}), 404
 
     return jsonify(task)
+
+
+@api.route('/home')
+def home():
+    return jsonify({"message": "Welcome to the home page"})
