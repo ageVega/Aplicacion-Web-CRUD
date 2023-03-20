@@ -23,8 +23,14 @@
                 <label for="tarea">Tarea</label>
                 <input type="text" name="tarea" placeholder="Tarea" class="form-control mb-2" required>
 
-                <label for="tarea">Prioridad</label>
-                <input type="number" name="prioridad" placeholder="1-5" class="form-control mb-2" required>
+                <label for="prioridad">Prioridad</label>
+                <select name="prioridad" class="form-control mb-2" required>
+                    <option value="1">1. Crítica</option>
+                    <option value="2">2. Urgente</option>
+                    <option value="3">3. Importante</option>
+                    <option value="4">4. Moderado</option>
+                    <option value="5">5. Menor</option>
+                </select>
 
                 <button class="btn btn-primary">Save</button>
             </form>

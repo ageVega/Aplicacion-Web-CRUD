@@ -2,18 +2,17 @@ const taskForm = document.querySelector('#taskForm');
 const taskList = document.querySelector('#taskList');
 
 let tareas = [];
-
 let editing = false;
-let tareaId = null; 
+let tareaId = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
-    const response = await fetch("/api/tasks");
+    const response = await fetch('/api/tasks');
     const data = await response.json();
     tareas = data;
     renderTask(tareas);
 });
 
-taskForm.addEventListener("submit", async (e) => {
+taskForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const task = taskForm['tarea'].value;
@@ -30,14 +29,12 @@ taskForm.addEventListener("submit", async (e) => {
                 priority
             })
         });
-    
+
         const data = await response.json();
-        
         tareas.push(data);
     } else {
-        
         const response = await fetch(`/api/tasks/${tareaId}`, {
-            method: "PUT",
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -46,21 +43,19 @@ taskForm.addEventListener("submit", async (e) => {
                 priority
             })
         });
+
         const updatedTask = await response.json();
-        
         tareas = tareas.map(tarea => tarea.id === updatedTask.id ? updatedTask : tarea);
-        
         editing = false;
         tareaId = null;
     }
 
     reloadPage();
-
     taskForm.reset();
 });
 
 async function reloadPage() {
-    const response = await fetch("/api/tasks");
+    const response = await fetch('/api/tasks');
     const data = await response.json();
     tareas = data;
     renderTask(tareas);
@@ -68,7 +63,6 @@ async function reloadPage() {
 
 function renderTask(tareas) {
     taskList.innerHTML = '';
-
     tareas = sortTasks(tareas, true);
 
     tareas.forEach(tarea => {
@@ -86,7 +80,6 @@ function renderTask(tareas) {
         `;
 
         const btnDelete = taskItem.querySelector('.btn-delete');
-
         btnDelete.addEventListener("click", async () => {
             const response = await fetch(`/api/tasks/${tarea.id}`, {
                 method: 'DELETE'
@@ -94,12 +87,10 @@ function renderTask(tareas) {
             const data = await response.json();
 
             tareas = tareas.filter(tarea => tarea.id !== data.id);
-
             renderTask(tareas);
         });
 
         const btnEdit = taskItem.querySelector('.btn-edit');
-
         btnEdit.addEventListener("click", async () => {
             const response = await fetch(`/api/tasks/${tarea.id}`);
             const data = await response.json();
@@ -117,12 +108,13 @@ function renderTask(tareas) {
 
 function sortTasks(tareas, sortByPriority = true) {
     return tareas.sort((a, b) => {
-      if (sortByPriority) {
-        if (a.priority < b.priority) return -1;
-        if (a.priority > b.priority) return 1;
-      }
-      if (a.task < b.task) return -1;
-      if (a.task > b.task) return 1;
-      return 0;
+        if (sortByPriority) {
+            if (a.priority < b.priority) return -1;
+            if (a.priority > b.priority) return 1;
+        }
+        if (a.task < b.task) return -1;
+        if (a.task > b.task) return 1;
+        return 0;
     });
 }
+``
