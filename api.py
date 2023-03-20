@@ -3,6 +3,7 @@ import os
 from psycopg2 import connect, extras
 from flask import Blueprint, jsonify, request
 from flask_login import UserMixin
+from flask_login import login_required
 
 api = Blueprint('api', __name__)
 
@@ -25,6 +26,7 @@ class User(UserMixin):
         self.password = password
 
 @api.route('/api/tasks', methods=['GET'])
+@login_required
 def get_tasks():
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
@@ -38,6 +40,7 @@ def get_tasks():
     return jsonify(tasks)
 
 @api.route('/api/tasks', methods=['POST'])
+@login_required
 def create_task():
     new_task = request.get_json()
     task = new_task['task']
@@ -58,6 +61,7 @@ def create_task():
     return jsonify(new_created_task)
 
 @api.route('/api/tasks/<int:id>', methods=['DELETE'])
+@login_required
 def delete_task(id):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
@@ -76,6 +80,7 @@ def delete_task(id):
     return jsonify(task)
 
 @api.route('/api/tasks/<int:id>', methods=['PUT'])
+@login_required
 def update_task(id):
     new_task = request.get_json()
     task = new_task['task']
@@ -99,6 +104,7 @@ def update_task(id):
     return jsonify(updated_task)
 
 @api.route('/api/tasks/<int:id>', methods=['GET'])
+@login_required
 def get_task(id):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
@@ -116,5 +122,6 @@ def get_task(id):
 
 
 @api.route('/home')
+@login_required
 def home():
     return jsonify({"message": "Welcome to the home page"})

@@ -67,7 +67,7 @@ def register():
 
     user = User(user_data['id'], user_data['username'], hashed_password)
     login_user(user)
-    return redirect(url_for('api.get_tasks'))
+    return redirect(url_for('home'))  # Redirige a la ruta principal al registrarse
 
 @login_blueprint.route('/login', methods=['POST'])
 def login():
@@ -88,13 +88,13 @@ def login():
 
     user = User(user_data['id'], user_data['username'], user_data['password'])
     login_user(user)
-    return redirect(url_for('api.get_tasks'))
+    return redirect(url_for('home'))  # Redirige a la ruta principal al iniciar sesión
 
 @login_blueprint.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('api.get_tasks'))
+    return redirect(url_for('auth.login'))
 
 @login_blueprint.route('/register', methods=['GET'])
 def register_form():
