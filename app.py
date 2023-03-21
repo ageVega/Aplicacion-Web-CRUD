@@ -6,6 +6,7 @@ from flask_login import LoginManager, current_user, login_required
 from api import api
 from login import login_blueprint
 from login import login_manager  # Importa la instancia de LoginManager desde login.py
+from flask import session
 
 load_dotenv()  # Carga las variables de entorno desde .env
 
@@ -20,8 +21,9 @@ login_manager.login_view = "auth.login"  # Establece la vista de inicio de sesi√
 
 @app.route('/')
 @login_required  # Asegura que s√≥lo los usuarios autenticados puedan acceder a esta ruta
-def index():
-    return render_template('index.html')
+def home():
+    username = session.get('username', 'Invitado')
+    return render_template('index.html', username=username)
 
 
 if __name__ == '__main__':
