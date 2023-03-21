@@ -78,7 +78,7 @@ def register():
 
     user = User(user_data['id'], user_data['username'], hashed_password)
     login_user(user)
-    return redirect(url_for('/'))  # Redirige a la ruta principal al registrarse
+    return redirect(url_for('home'))  # Redirige a la ruta principal al registrarse
 
 @login_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
