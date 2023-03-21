@@ -9,7 +9,7 @@
     <!-- Bootstrap, Bootswatch -->
     <link rel="stylesheet" href="https://bootswatch.com/5/yeti/bootstrap.min.css">
     <!-- Custom css -->
-    <link rel="stylesheet" href="/static/main.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     <!-- Fuente de Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,7 +59,7 @@
         <p>&copy; 2023 Amo de Casa. Todos los derechos reservados.</p>
     </footer>
 
-    <script src="/static/main.js"></script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
 
 </body>
 

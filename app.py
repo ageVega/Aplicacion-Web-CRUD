@@ -1,7 +1,7 @@
 # app.py
 import os
 from dotenv import load_dotenv
-from flask import Flask, send_file
+from flask import Flask, request, jsonify, render_template
 from flask_login import LoginManager, current_user, login_required
 from api import api
 from login import login_blueprint
@@ -17,10 +17,12 @@ app.register_blueprint(login_blueprint, url_prefix='/auth')
 login_manager.init_app(app)
 login_manager.login_view = "auth.login"  # Establece la vista de inicio de sesión
 
+
 @app.route('/')
 @login_required  # Asegura que sólo los usuarios autenticados puedan acceder a esta ruta
-def home():
-    return send_file('static/index.html')
+def index():
+    return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
