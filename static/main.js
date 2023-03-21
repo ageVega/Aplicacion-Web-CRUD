@@ -135,4 +135,3 @@ function sortTasks(tareas, sortByPriority = true) {
         return 0;
     });
 }
-``

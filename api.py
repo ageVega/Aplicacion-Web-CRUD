@@ -1,9 +1,12 @@
 # api.py
 import os
+from dotenv import load_dotenv
 from psycopg2 import connect, extras
 from flask import Blueprint, jsonify, request
 from flask_login import UserMixin
 from flask_login import login_required
+
+load_dotenv()  # Carga las variables de entorno desde .env
 
 api = Blueprint('api', __name__)
 
