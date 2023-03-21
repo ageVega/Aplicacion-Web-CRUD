@@ -1,9 +1,9 @@
 # login.py
-from flask import Blueprint, request, redirect, url_for, jsonify, render_template
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from psycopg2 import connect, extras
 from os import environ
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required
+from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 
 login_blueprint = Blueprint('auth', __name__)
 
@@ -40,9 +40,20 @@ def get_user_by_id(user_id):
 
     return None
 
+def get_user_by_username(username):
+    conn = get_connection()
+    cursor = conn.cursor(cursor_factory=extras.DictCursor)
+    cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return user
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return get_user_by_id(user_id)
+
 
 @login_blueprint.route('/register', methods=['POST'])
 def register():
@@ -67,28 +78,27 @@ def register():
 
     user = User(user_data['id'], user_data['username'], hashed_password)
     login_user(user)
-    return redirect(url_for('home'))  # Redirige a la ruta principal al registrarse
+    return redirect(url_for('/'))  # Redirige a la ruta principal al registrarse
 
-@login_blueprint.route('/login', methods=['POST'])
+@login_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
-    username = request.form.get('username')
-    password = request.form.get('password')
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
 
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = get_user_by_username(username)
 
-    cur.execute('SELECT * FROM users WHERE username = %s', (username,))
-    user_data = cur.fetchone()
+        if user and check_password_hash(user['password'], password):
+            user_obj = User(user['id'], user['username'], user['password'])
+            login_user(user_obj)
+            session['username'] = user['username']  # Guarda el nombre de usuario en la sesión
+            return redirect(url_for('home'))
+        else:
+            flash('Usuario o contraseña incorrectos.')
 
-    cur.close()
-    conn.close()
-
-    if not user_data or not check_password_hash(user_data['password'], password):
-        return jsonify({'message': 'Invalid username or password'}), 401
-
-    user = User(user_data['id'], user_data['username'], user_data['password'])
-    login_user(user)
-    return redirect(url_for('home'))  # Redirige a la ruta principal al iniciar sesión
+    return render_template('login.html')
 
 @login_blueprint.route('/logout')
 @login_required
