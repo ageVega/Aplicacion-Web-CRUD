@@ -7,3 +7,12 @@
     font-size: 20px;
     font-weight: bold;
 }
+
+.sticky-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background-color: #ffffff; /* O el color de fondo que prefieras */
+}
