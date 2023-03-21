@@ -1,130 +1,30 @@
-from flask import Flask, request, jsonify, send_file
-from psycopg2 import connect, extras
+# app.py
+import os
 from dotenv import load_dotenv
-from os import environ
+from flask import Flask, request, jsonify, render_template
+from flask_login import LoginManager, current_user, login_required
+from api import api
+from login import login_blueprint
+from login import login_manager  # Importa la instancia de LoginManager desde login.py
+from flask import session
 
-load_dotenv()
+load_dotenv()  # Carga las variables de entorno desde .env
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY')  # Necesario para flask-login
+app.register_blueprint(api)
+app.register_blueprint(login_blueprint, url_prefix='/auth')
 
-host = environ.get('DB_HOST')
-port = environ.get('DB_PORT')
-dbname = environ.get('DB_DATABASE')
-username = environ.get('DB_USER')
-password = environ.get('DB_PASSWORD')
-
-def get_connection():
-    conn = connect(host=host, port=port, dbname=dbname, user=username, password=password)
-    return conn
+login_manager.init_app(app)
+login_manager.login_view = "auth.login"  # Establece la vista de inicio de sesión
 
 
-# Get tareas
-@app.get('/api/tasks')
-def get_tasks():
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    cur.execute('SELECT * FROM tasks')
-    tasks = cur.fetchall()
-
-    cur.close()
-    conn.close()
-
-    return jsonify(tasks)
-
-# Create tarea
-@app.post('/api/tasks')
-def create_task():
-    new_task = request.get_json()
-    task = new_task['task']
-    priority = new_task['priority']
-
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    cur.execute('INSERT INTO tasks (task, priority) VALUES (%s, %s) RETURNING *',
-                (task, priority))
-
-    new_created_task = cur.fetchone()
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    return jsonify(new_created_task)
-
-# Delete tarea
-@app.delete('/api/tasks/<id>')
-def delete_task(id):
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    cur.execute('DELETE FROM tasks WHERE id = %s RETURNING *', (id,))
-    task = cur.fetchone()
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    if task is None:
-        return jsonify({'message': 'Task not found'}), 404
-
-    return jsonify(task)
-
-# Edit tarea
-@app.put('/api/tasks/<id>')
-def update_task(id):
-    new_task = request.get_json()
-    task = new_task['task']
-    priority = new_task['priority']
-
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    cur.execute('UPDATE tasks SET task = %s, priority = %s WHERE id = %s RETURNING *',
-                (task, priority, id))
-    updated_task = cur.fetchone()
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    if updated_task is None:
-        return jsonify({'message': 'Task not found'}), 404
-
-    return jsonify(updated_task)
-
-# Get tarea
-@app.get('/api/tasks/<id>')
-def get_task(id):
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    cur.execute('SELECT * FROM tasks WHERE id = %s', (id,))
-    task = cur.fetchone()
-
-    cur.close()
-    conn.close()
-
-    if task is None:
-        return jsonify({'message': 'Task not found'}), 404
-
-    return jsonify(task)
-
-# Pagina principal
-@app.get('/')
+@app.route('/')
+@login_required  # Asegura que sólo los usuarios autenticados puedan acceder a esta ruta
 def home():
-    return send_file('static/index.html')
+    username = session.get('username', 'Invitado')
+    return render_template('index.html', username=username)
 
-
-if __name__ == "__main__":
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=8080)
-
-"""
 
 if __name__ == '__main__':
     app.run(debug=True)
-"""
