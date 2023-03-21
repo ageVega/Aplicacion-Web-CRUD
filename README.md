@@ -100,6 +100,8 @@ $ pip install python-dotenv
 $ pip install gunicorn
 
 $ pip install waitress
+
+$ pip install flask_login
 ```
 
 ### Instalar dependencias desde requirements.txt
