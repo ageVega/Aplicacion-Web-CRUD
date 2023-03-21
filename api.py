@@ -119,9 +119,3 @@ def get_task(id):
         return jsonify({'message': 'Task not found'}), 404
 
     return jsonify(task)
-
-
-@api.route('/home')
-@login_required
-def home():
-    return jsonify({"message": "Welcome to the home page"})
