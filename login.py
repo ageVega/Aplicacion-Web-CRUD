@@ -95,7 +95,7 @@ def login():
             user_obj = User(user['id'], user['username'], user['password'])
             login_user(user_obj)
             session['username'] = user['username']  # Guarda el nombre de usuario en la sesión
-            return redirect(url_for('home'))
+            return redirect(url_for('dashboard'))
         else:
             flash('Usuario o contraseña incorrectos.')
 
@@ -105,7 +105,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('home'))
 
 @login_blueprint.route('/register', methods=['GET'])
 def register_form():
