@@ -90,6 +90,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = get_user_by_username(username)
+        session['user_id'] = user['id']
 
         if user and check_password_hash(user['password'], password):
             user_obj = User(user['id'], user['username'], user['password'])
@@ -104,6 +105,8 @@ def login():
 @login_blueprint.route('/logout')
 @login_required
 def logout():
+    session.pop('user_id', None)
+    session.pop('username', None)
     logout_user()
     return redirect(url_for('home'))
 

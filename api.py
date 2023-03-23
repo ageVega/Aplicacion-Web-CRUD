@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from psycopg2 import connect, extras
 from flask import Blueprint, jsonify, request
 from flask_login import UserMixin
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 load_dotenv()  # Carga las variables de entorno desde .env
 
@@ -31,10 +31,11 @@ class User(UserMixin):
 @api.route('/api/tasks', methods=['GET'])
 @login_required
 def get_tasks():
+    user_id = request.args.get('user_id')
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+    cur.execute("SELECT * FROM tasks WHERE user_id = %s", (current_user.id,))
 
-    cur.execute('SELECT * FROM tasks')
     tasks = cur.fetchall()
 
     cur.close()
@@ -48,13 +49,11 @@ def create_task():
     new_task = request.get_json()
     task = new_task['task']
     priority = new_task['priority']
+    user_id = new_task['user_id']
 
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    cur.execute('INSERT INTO tasks (task, priority) VALUES (%s, %s) RETURNING *',
-                (task, priority))
-
+    cur.execute("INSERT INTO tasks (task, priority, user_id) VALUES (%s, %s, %s) RETURNING *", (task, priority, current_user.id))
     new_created_task = cur.fetchone()
     conn.commit()
 
