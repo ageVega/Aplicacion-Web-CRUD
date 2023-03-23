@@ -16,3 +16,7 @@
     z-index: 100;
     background-color: #ffffff; /* O el color de fondo que prefieras */
 }
+
+.mt-5 {
+    margin-top: 4rem !important;
+}
