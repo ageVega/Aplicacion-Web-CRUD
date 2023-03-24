@@ -62,6 +62,11 @@ def load_user(user_id):
 def register():
     username = request.form.get('username').lower()  # Convertir a minúsculas
     password = request.form.get('password')
+    confirm_password = request.form.get('confirm_password')
+
+    if password != confirm_password:
+        flash("Las contraseñas no coinciden. Por favor, inténtalo de nuevo.", "danger")
+        return redirect(url_for('auth.register_form'))
 
     hashed_password = generate_password_hash(password)
 
@@ -95,7 +100,8 @@ def login():
         if user and check_password_hash(user['password'], password):
             user_obj = User(user['id'], user['username'], user['password'])
             login_user(user_obj)
-            session['username'] = user['username']  # Guarda el nombre de usuario en la sesión
+            capitalized_username = user['username'].capitalize() # Asegurar que el nombre de usuario empiece con mayúscula
+            session['username'] = capitalized_username  # Guarda el nombre de usuario en la sesión
             return redirect(url_for('dashboard'))
         else:
             flash('Usuario o contraseña incorrectos.')
