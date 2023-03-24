@@ -60,7 +60,7 @@ def load_user(user_id):
 
 @login_blueprint.route('/register', methods=['POST'])
 def register():
-    username = request.form.get('username')
+    username = request.form.get('username').lower()  # Convertir a minúsculas
     password = request.form.get('password')
 
     hashed_password = generate_password_hash(password)
@@ -87,7 +87,7 @@ def login():
         return redirect(url_for('home'))
 
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'].lower()  # Convertir a minúsculas
         password = request.form['password']
         user = get_user_by_username(username)
         session['user_id'] = user['id']
