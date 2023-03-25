@@ -21,20 +21,20 @@ def get_connection():
     conn = connect(host=host, port=port, dbname=dbname, user=username, password=password)
     return conn
 
-# Clase de usuario para flask-login
-class User(UserMixin):
-    def __init__(self, id, username, password):
+# Clase de casa para flask-login
+class House(UserMixin):
+    def __init__(self, id, house_name, password):
         self.id = id
-        self.username = username
+        self.house_name = house_name
         self.password = password
 
 @api.route('/api/tasks', methods=['GET'])
 @login_required
 def get_tasks():
-    user_id = request.args.get('user_id')
+    house_id = request.args.get('house_id')
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-    cur.execute("SELECT * FROM tasks WHERE user_id = %s", (current_user.id,))
+    cur.execute("SELECT * FROM tasks WHERE house_id = %s", (current_user.id,))
 
     tasks = cur.fetchall()
 
@@ -49,11 +49,11 @@ def create_task():
     new_task = request.get_json()
     task = new_task['task']
     priority = new_task['priority']
-    user_id = new_task['user_id']
+    house_id = new_task['house_id']
 
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-    cur.execute("INSERT INTO tasks (task, priority, user_id) VALUES (%s, %s, %s) RETURNING *", (task, priority, current_user.id))
+    cur.execute("INSERT INTO tasks (task, priority, house_id) VALUES (%s, %s, %s) RETURNING *", (task, priority, current_user.id))
     new_created_task = cur.fetchone()
     conn.commit()
 

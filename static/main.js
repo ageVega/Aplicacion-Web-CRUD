@@ -2,7 +2,7 @@
 const taskForm = document.querySelector('#taskForm');
 const taskList = document.querySelector('#taskList');
 
-const userId = '{{current_user.id}}'; 
+const houseId = '{{current_user.id}}'; 
 
 let tareas = [];
 
@@ -22,8 +22,8 @@ function priorityText(priority) {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-    clearUserIdOnLogout();
-    const response = await fetch(`/api/tasks?user_id=${userId}`);
+    clearHouseIdOnLogout();
+    const response = await fetch(`/api/tasks?house_id=${houseId}`);
     const data = await response.json();
     tareas = data;
     renderTask(tareas);
@@ -35,7 +35,7 @@ taskForm.addEventListener('submit', async (e) => {
 
     const task = taskForm['tarea'].value;
     const priority = taskForm['prioridad'].value;
-    const user_id = userId;
+    const house_id = houseId;
 
     if (!editing) {
         const response = await fetch('/api/tasks', {
@@ -46,7 +46,7 @@ taskForm.addEventListener('submit', async (e) => {
             body: JSON.stringify({
                 task,
                 priority,
-                user_id
+                house_id
             })
         });
 
@@ -61,7 +61,7 @@ taskForm.addEventListener('submit', async (e) => {
             body: JSON.stringify({
                 task,
                 priority,
-                user_id
+                house_id
             })
         });
 
@@ -143,7 +143,7 @@ function sortTasks(tareas, sortByPriority = true) {
     });
 }
 
-function clearUserIdOnLogout() {
+function clearHouseIdOnLogout() {
     const urlPath = window.location.pathname;
     if (urlPath === '/' || urlPath === '/home') {
         sessionStorage.removeItem('user_id');
