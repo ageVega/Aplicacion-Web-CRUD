@@ -144,56 +144,46 @@ EOF
   }
 }
 
-# Crea un Target Group
-resource "aws_lb_target_group" "matrix_tg" {
-  name     = "Matrix-AmoDeCasa"
-  port     = 8080
-  protocol = "HTTP"
-  vpc_id   = module.vpc.vpc_id
+module "alb" {
+  source  = "terraform-aws-modules/alb/aws"
+  version = "5.15.0" # Puedes cambiar la versión si lo deseas, asegúrate de usar una versión compatible
 
-  health_check {
-    protocol = "HTTP"
-    path     = "/auth/login"
-    port     = "8080"
-  }
-}
+  name = "Matrix-AmoDeCasa"
 
-# Crea un Application Load Balancer
-resource "aws_lb" "matrix_alb" {
-  name               = "Matrix-AmoDeCasa"
-  internal           = false # Crea un balanceador de carga público accesible desde Internet
+  # Configuración del ALB
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.matrix_sg.id]
   subnets            = module.vpc.public_subnets
+  security_groups    = [aws_security_group.matrix_sg.id]
+  internal           = false # Crea un balanceador de carga público accesible desde Internet
+
+  # Configuración del grupo de destino
+  target_group_port     = 8080
+  target_group_protocol = "HTTP"
+  health_check = {
+    path = "/auth/login"
+    port = "8080"
+  }
+
+  # Configuración del listener HTTP
+  http_listeners = [
+    {
+      port = 80
+      action_type = "forward"
+    }
+  ]
+
+  # Configuración del listener HTTPS
+  https_listeners = [
+    {
+      port = 443
+      certificate_arn = var.certificate_arn
+      ssl_policy      = "ELBSecurityPolicy-2016-08"
+      action_type     = "forward"
+    }
+  ]
 
   tags = {
     Name = "Matrix-AmoDeCasa"
-  }
-}
-
-# Crea un Listener
-resource "aws_lb_listener" "matrix_http" {
-  load_balancer_arn = aws_lb.matrix_alb.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.matrix_tg.arn
-  }
-}
-
-# Crea un Listener para el puerto 443
-resource "aws_lb_listener" "matrix_https" {
-  load_balancer_arn = aws_lb.matrix_alb.arn
-  port              = 443
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = var.certificate_arn
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.matrix_tg.arn
   }
 }
 
