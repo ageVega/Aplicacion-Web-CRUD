@@ -16,22 +16,22 @@ variable "vpc_cidr" {
 
 variable "public_subnets" {
   default = {
-    "eu-west-1a" = "10.0.1.0/24"
-    "eu-west-1b" = "10.0.2.0/24"
-    "eu-west-1c" = "10.0.3.0/24"
+    "eu-west-1a" = "10.0.0.0/20"
+    "eu-west-1b" = "10.0.16.0/20"
+    "eu-west-1c" = "10.0.32.0/20"
   }
 }
 
 variable "private_subnets" {
   default = {
-    "eu-west-1a" = "10.0.101.0/24"
-    "eu-west-1b" = "10.0.102.0/24"
-    "eu-west-1c" = "10.0.103.0/24"
+    "eu-west-1a" = "10.0.128.0/20"
+    "eu-west-1b" = "10.0.144.0/20"
+    "eu-west-1c" = "10.0.160.0/20"
   }
 }
 
 variable "ami_id" {
-  default = "ami-0c94855ba95b798c7" # Ubuntu Server 22.04 LTS, actualiza este valor si es necesario
+  default = "ami-00aa9d3df94c6c354" # Ubuntu Server 22.04 LTS, actualiza este valor si es necesario
 }
 
 variable "instance_type" {
@@ -53,6 +53,8 @@ variable "domain_name" {
 provider "aws" {
   region = var.aws_region
 }
+
+# ------------------------------------------------------------------------------------------------------------------
 
 # Crea una VPC
 resource "aws_vpc" "TEMPLATE_001" {
