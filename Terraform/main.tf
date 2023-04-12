@@ -119,7 +119,7 @@ resource "aws_launch_configuration" "matrix_lc" {
   name_prefix     = "Matrix-AmoDeCasa"
   image_id        = var.ami_id
   instance_type   = var.instance_type
-  security_groups = [module.matrix_sg.this_security_group_id]
+  security_groups = [module.matrix_sg.this_security_group_id[0]]
   key_name        = var.key_pair
 
   user_data = <<-EOF
@@ -169,7 +169,7 @@ resource "aws_lb" "matrix_alb" {
   name               = "Matrix-AmoDeCasa"
   internal           = false # Crea un balanceador de carga público accesible desde Internet
   load_balancer_type = "application"
-  security_groups    = [module.matrix_sg.this_security_group_id]
+  security_groups    = [module.matrix_sg.this_security_group_id[0]]
   subnets            = module.vpc.public_subnets
 
   tags = {
