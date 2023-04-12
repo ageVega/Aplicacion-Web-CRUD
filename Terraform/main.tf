@@ -227,7 +227,7 @@ resource "aws_autoscaling_group" "matrix_asg" {
 
 # Muestra la ID del VPC y el nombre como salida
 output "vpc_info" {
-  value = "VPC Name: ${var.vpc_name}, VPC ID: ${aws_vpc.TEMPLATE_001.id}"
+  value = "VPC Name: ${var.vpc_name}, VPC ID: ${module.vpc.vpc_id}"
 }
 
 output "public_subnets_ids" {
@@ -266,14 +266,15 @@ output "alb_info" {
 }
 
 output "listener_80_info" {
-  value = "Listener Name: ${aws_lb_listener.matrix_http.name}, Listener ID: ${aws_lb_listener.matrix_http.id}"
+  description = "Information about the Listener for port 80"
+  value       = "Listener ARN: ${aws_lb_listener.matrix_http.arn}"
 }
 
 output "listener_443_info" {
-  value = "Listener Name: ${aws_lb_listener.matrix_https.name}, Listener ID: ${aws_lb_listener.matrix_https.id}"
+  description = "Information about the Listener for port 443"
+  value       = "Listener ARN: ${aws_lb_listener.matrix_https.arn}"
 }
 
 output "alb_dns_name" {
   value = aws_lb.matrix_alb.dns_name
 }
-
