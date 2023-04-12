@@ -50,8 +50,14 @@ variable "db_host" {}
 variable "db_database" {}
 variable "db_port" {}
 variable "db_user" {}
-variable "db_password" {}
-variable "secret_key" {}
+
+variable "db_password" {
+  sensitive = true # Evita que el valor de la variable aparezca en la salida de la línea de comandos de Terraform
+}
+
+variable "secret_key" {
+  sensitive = true # Evita que el valor de la variable aparezca en la salida de la línea de comandos de Terraform
+}
 
 variable "certificate_arn" {
   description = "The ARN of the SSL certificate for the HTTPS listener"
