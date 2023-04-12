@@ -94,12 +94,6 @@ module "vpc" {
 }
 
 # Crea un grupo de seguridad
-resource "aws_security_group" "matrix_sg" {
-  name        = "Matrix"
-  description = "Grupo de seguridad de pruebas que permite acceso total de entrada y de salida"
-  vpc_id      = module.vpc.vpc_id
-}
-
 module "matrix_sg" {
   source = "terraform-aws-modules/security-group/aws"
 
