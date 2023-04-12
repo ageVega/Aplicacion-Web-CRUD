@@ -5,11 +5,11 @@ provider "aws" {
 
 # Define la variable global
 variable "vpc_name" {
-  default = "TEMPLATE_terraform_vpc"
+  default = "TEMPLATE_001"
 }
 
 # Crea un VPC
-resource "aws_vpc" "TEMPLATE" {
+resource "aws_vpc" "TEMPLATE_001" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
@@ -19,5 +19,5 @@ resource "aws_vpc" "TEMPLATE" {
 
 # Muestra la ID del VPC y el nombre como salida
 output "vpc_info" {
-  value = "VPC Name: ${var.vpc_name}, VPC ID: ${aws_vpc.TEMPLATE.id}"
+  value = "VPC Name: ${var.vpc_name}, VPC ID: ${aws_vpc.TEMPLATE_001.id}"
 }
