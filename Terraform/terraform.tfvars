@@ -1,0 +1,6 @@
+db_host     = ""
+db_database = ""
+db_port     = ""
+db_user     = ""
+db_password = ""
+secret_key  = ""
