@@ -31,7 +31,7 @@ variable "private_subnets" {
 }
 
 variable "ami_id" {
-  default = "ami-00aa9d3df94c6c354" # Ubuntu Server 22.04 LTS, actualiza este valor si es necesario
+  default = "ami-06d94a781b544c133" # Ubuntu Server 22.04 LTS, actualiza este valor si es necesario
 }
 
 variable "instance_type" {
@@ -52,6 +52,11 @@ variable "db_port" {}
 variable "db_user" {}
 variable "db_password" {}
 variable "secret_key" {}
+
+variable "certificate_arn" {
+  description = "The ARN of the SSL certificate for the HTTPS listener"
+  type        = string
+}
 
 # RECURSOS
 # --------------------------------------
@@ -145,6 +150,77 @@ EOF
   }
 }
 
+# Crea un Target Group
+resource "aws_lb_target_group" "matrix_tg" {
+  name     = "Matrix-AmoDeCasa"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = module.vpc.vpc_id
+
+  health_check {
+    protocol = "HTTP"
+    path     = "/auth/login"
+    port     = "8080"
+  }
+}
+
+# Crea un Application Load Balancer
+resource "aws_lb" "matrix_alb" {
+  name               = "Matrix-AmoDeCasa"
+  internal           = false # Crea un balanceador de carga público accesible desde Internet
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.matrix_sg.id]
+  subnets            = module.vpc.public_subnets
+
+  tags = {
+    Name = "Matrix-AmoDeCasa"
+  }
+}
+
+# Crea un Listener
+resource "aws_lb_listener" "matrix_http" {
+  load_balancer_arn = aws_lb.matrix_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.matrix_tg.arn
+  }
+}
+
+# Crea un Listener para el puerto 443
+resource "aws_lb_listener" "matrix_https" {
+  load_balancer_arn = aws_lb.matrix_alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.matrix_tg.arn
+  }
+}
+
+# Crea un grupo de autoescalado
+resource "aws_autoscaling_group" "matrix_asg" {
+  name_prefix          = "Matrix-AmoDeCasa"
+  launch_configuration = aws_launch_configuration.matrix_lc.id
+  vpc_zone_identifier  = values(module.vpc.public_subnets)
+
+  min_size = 1
+  max_size = 1
+  desired_capacity = 1
+
+  target_group_arns = [aws_lb_target_group.matrix_tg.arn]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+
 
 # OUTPUTS
 # --------------------------------------
@@ -153,3 +229,51 @@ EOF
 output "vpc_info" {
   value = "VPC Name: ${var.vpc_name}, VPC ID: ${aws_vpc.TEMPLATE_001.id}"
 }
+
+output "public_subnets_ids" {
+  description = "The IDs of the public subnets"
+  value       = module.vpc.public_subnets
+}
+
+output "private_subnets_ids" {
+  description = "The IDs of the private subnets"
+  value       = module.vpc.private_subnets
+}
+
+# Muestra la ID del grupo de seguridad y el nombre como salida
+output "sg_info" {
+  value = "SG Name: ${aws_security_group.matrix_sg.name}, SG ID: ${aws_security_group.matrix_sg.id}"
+}
+
+# Muestra la ID del grupo de autoescalado y el nombre como salida
+output "asg_info" {
+  value = "ASG Name: ${aws_autoscaling_group.matrix_asg.name}, ASG ID: ${aws_autoscaling_group.matrix_asg.id}"
+}
+
+# Muestra la ID del grupo de lanzamiento y el nombre como salida
+output "lc_info" {
+  value = "LC Name: ${aws_launch_configuration.matrix_lc.name}, LC ID: ${aws_launch_configuration.matrix_lc.id}"
+}
+
+# Muestra la ID del grupo de balanceo de carga y el nombre como salida
+output "tg_info" {
+  value = "TG Name: ${aws_lb_target_group.matrix_tg.name}, TG ID: ${aws_lb_target_group.matrix_tg.id}"
+}
+
+# Muestra la ID del grupo de balanceo de carga y el nombre como salida
+output "alb_info" {
+  value = "ALB Name: ${aws_lb.matrix_alb.name}, ALB ID: ${aws_lb.matrix_alb.id}"
+}
+
+output "listener_80_info" {
+  value = "Listener Name: ${aws_lb_listener.matrix_http.name}, Listener ID: ${aws_lb_listener.matrix_http.id}"
+}
+
+output "listener_443_info" {
+  value = "Listener Name: ${aws_lb_listener.matrix_https.name}, Listener ID: ${aws_lb_listener.matrix_https.id}"
+}
+
+output "alb_dns_name" {
+  value = aws_lb.matrix_alb.dns_name
+}
+
