@@ -100,18 +100,24 @@ resource "aws_security_group" "matrix_sg" {
   vpc_id      = module.vpc.vpc_id
 }
 
-module "matrix_sg" {
-  source = "terraform-aws-modules/security-group/aws"
+resource "aws_security_group_rule" "matrix_sg_ingress" {
+  security_group_id = aws_security_group.matrix_sg.id
 
-  name        = "Matrix"
-  description = "Grupo de seguridad de pruebas que permite acceso total de entrada y de salida"
-  vpc_id      = module.vpc.vpc_id
+  type        = "ingress"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
 
-  ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules       = ["all-tcp"]
+resource "aws_security_group_rule" "matrix_sg_egress" {
+  security_group_id = aws_security_group.matrix_sg.id
 
-  egress_cidr_blocks = ["0.0.0.0/0"]
-  egress_rules       = ["all-tcp"]
+  type        = "egress"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
 }
 
 # Crea una plantilla de lanzamiento
@@ -119,7 +125,7 @@ resource "aws_launch_configuration" "matrix_lc" {
   name_prefix     = "Matrix-AmoDeCasa"
   image_id        = var.ami_id
   instance_type   = var.instance_type
-  security_groups = [module.matrix_sg.this_security_group_id]
+  security_groups = [aws_security_group.matrix_sg.id]
   key_name        = var.key_pair
 
   user_data = <<-EOF
@@ -169,7 +175,7 @@ resource "aws_lb" "matrix_alb" {
   name               = "Matrix-AmoDeCasa"
   internal           = false # Crea un balanceador de carga público accesible desde Internet
   load_balancer_type = "application"
-  security_groups    = [module.matrix_sg.this_security_group_id]
+  security_groups    = [aws_security_group.matrix_sg.id]
   subnets            = module.vpc.public_subnets
 
   tags = {
