@@ -183,7 +183,7 @@ resource "aws_lb" "matrix_alb" {
   }
 }
 
-# Crea un Listener
+# Crea un Listener para el puerto 80
 resource "aws_lb_listener" "matrix_http" {
   load_balancer_arn = aws_lb.matrix_alb.arn
   port              = 80
