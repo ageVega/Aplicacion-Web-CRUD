@@ -46,13 +46,13 @@ variable "domain_name" {
   default = "matrix.agevega.com"
 }
 
+# RECURSOS
+# --------------------------------------
+
 # Configura el proveedor AWS
 provider "aws" {
   region = var.aws_region
 }
-
-# RECURSOS
-# --------------------------------------
 
 # Crea una VPC
 resource "aws_vpc" "TEMPLATE_001" {
