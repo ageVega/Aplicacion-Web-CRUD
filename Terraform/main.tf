@@ -88,6 +88,7 @@ module "vpc" {
   single_nat_gateway   = true # Esta línea indica que se debe utilizar una sola NAT Gateway para todas las zonas de disponibilidad (AZs) en lugar de crear una NAT Gateway por zona de disponibilidad
   enable_vpn_gateway   = false # Un VPN Gateway se utiliza para establecer conexiones de red privada virtual (VPN) entre tu VPC y tu red local o entre dos VPC diferentes
   enable_dns_hostnames = true # Las instancias en el VPC recibirán un nombre de host privado. Esto facilita la conexión y la comunicación entre las instancias en el VPC utilizando nombres de host en lugar de direcciones IP
+  enable_dns_support   = true # Asegura que las instancias en el VPC reciban un nombre de host público
   tags = {
     Terraform = "true"
     Project   = "Matrix"
