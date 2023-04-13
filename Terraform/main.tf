@@ -141,6 +141,10 @@ resource "aws_launch_template" "matrix_lt" {
 
   vpc_security_group_ids = [aws_security_group.matrix_sg.id]
 
+  network_interfaces {
+    associate_public_ip_address = true
+  }
+
   user_data = base64encode(<<-EOF
   #!/bin/bash
   # UBUNTU PYTHON AMODECASA
