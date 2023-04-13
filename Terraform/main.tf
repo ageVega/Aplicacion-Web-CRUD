@@ -40,7 +40,7 @@ variable "instance_type" {
 }
 
 variable "key_pair" {
-  default = "chicago.pem"
+  default = "miami"
 }
 
 variable "domain_name" {
