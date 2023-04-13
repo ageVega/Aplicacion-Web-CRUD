@@ -139,8 +139,6 @@ resource "aws_launch_template" "matrix_lt" {
   instance_type = var.instance_type
   key_name      = var.key_pair
 
-  vpc_security_group_ids = [aws_security_group.matrix_sg.id]
-
   network_interfaces {
     associate_public_ip_address = true
     security_groups             = [aws_security_group.matrix_sg.id]
