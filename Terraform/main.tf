@@ -15,20 +15,21 @@ variable "vpc_cidr" {
 }
 
 variable "public_subnets" {
-  default = {
-    "eu-west-1a" = "10.0.0.0/20"
-    "eu-west-1b" = "10.0.16.0/20"
-    "eu-west-1c" = "10.0.32.0/20"
-  }
+  default = [
+    "10.0.0.0/20",
+    "10.0.16.0/20",
+    "10.0.32.0/20"
+  ]
 }
 
 variable "private_subnets" {
-  default = {
-    "eu-west-1a" = "10.0.128.0/20"
-    "eu-west-1b" = "10.0.144.0/20"
-    "eu-west-1c" = "10.0.160.0/20"
-  }
+  default = [
+    "10.0.128.0/20",
+    "10.0.144.0/20",
+    "10.0.160.0/20"
+  ]
 }
+
 
 variable "ami_id" {
   default = "ami-06d94a781b544c133" # Ubuntu Server 22.04 LTS, actualiza este valor si es necesario
