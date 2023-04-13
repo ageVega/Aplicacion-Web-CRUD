@@ -143,6 +143,7 @@ resource "aws_launch_template" "matrix_lt" {
 
   network_interfaces {
     associate_public_ip_address = true
+    security_groups             = [aws_security_group.matrix_sg.id]
   }
 
   user_data = base64encode(<<-EOF
