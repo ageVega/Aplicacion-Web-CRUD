@@ -237,6 +237,9 @@ resource "aws_autoscaling_group" "matrix_asg" {
 
   target_group_arns = [aws_lb_target_group.matrix_tg.arn]
 
+  health_check_type         = "ELB"
+  health_check_grace_period = 300 # 5 minutos
+
   lifecycle {
     create_before_destroy = true
   }
