@@ -214,7 +214,7 @@ resource "aws_lb_listener" "matrix_https" {
 resource "aws_autoscaling_group" "matrix_asg" {
   name_prefix          = "Matrix-AmoDeCasa"
   launch_configuration = aws_launch_configuration.matrix_lc.id
-  vpc_zone_identifier  = values(module.vpc.public_subnets)
+  vpc_zone_identifier  = module.vpc.public_subnets
 
   min_size = 1
   max_size = 1
