@@ -122,35 +122,37 @@ resource "aws_security_group_rule" "matrix_sg_egress" {
 }
 
 # Crea una plantilla de lanzamiento
-resource "aws_launch_configuration" "matrix_lc" {
-  name_prefix     = "Matrix-AmoDeCasa"
-  image_id        = var.ami_id
-  instance_type   = var.instance_type
-  security_groups = [aws_security_group.matrix_sg.id]
-  key_name        = var.key_pair
+resource "aws_launch_template" "matrix_lt" {
+  name_prefix   = "Matrix-AmoDeCasa"
+  image_id      = var.ami_id
+  instance_type = var.instance_type
+  key_name      = var.key_pair
 
-  user_data = <<-EOF
-#!/bin/bash
-# UBUNTU PYTHON AMODECASA
-sudo su -
-cd /home/ubuntu
-apt update
-apt install python3-pip -y
-apt-get install libpq-dev -y
-export PATH=$PATH:/usr/bin/pg_config
-apt-get install postgresql -y
-git clone https://github.com/ageVega/Aplicacion-Web-CRUD.git
-pip install -r Aplicacion-Web-CRUD/requirements.txt
-cat << EOT >> Aplicacion-Web-CRUD/.env
-DB_HOST=${var.db_host}
-DB_DATABASE=${var.db_database}
-DB_PORT=${var.db_port}
-DB_USER=${var.db_user}
-DB_PASSWORD=${var.db_password}
-SECRET_KEY=${var.secret_key}
-EOT
-python3 Aplicacion-Web-CRUD/app.py
-EOF
+  vpc_security_group_ids = [aws_security_group.matrix_sg.id]
+
+  user_data = base64encode(<<-EOF
+  #!/bin/bash
+  # UBUNTU PYTHON AMODECASA
+  sudo su -
+  cd /home/ubuntu
+  apt update
+  apt install python3-pip -y
+  apt-get install libpq-dev -y
+  export PATH=$PATH:/usr/bin/pg_config
+  apt-get install postgresql -y
+  git clone https://github.com/ageVega/Aplicacion-Web-CRUD.git
+  pip install -r Aplicacion-Web-CRUD/requirements.txt
+  cat << EOT >> Aplicacion-Web-CRUD/.env
+  DB_HOST=${var.db_host}
+  DB_DATABASE=${var.db_database}
+  DB_PORT=${var.db_port}
+  DB_USER=${var.db_user}
+  DB_PASSWORD=${var.db_password}
+  SECRET_KEY=${var.secret_key}
+  EOT
+  python3 Aplicacion-Web-CRUD/app.py
+  EOF
+  )
 
   lifecycle {
     create_before_destroy = true
@@ -213,7 +215,10 @@ resource "aws_lb_listener" "matrix_https" {
 # Crea un grupo de autoescalado
 resource "aws_autoscaling_group" "matrix_asg" {
   name_prefix          = "Matrix-AmoDeCasa"
-  launch_configuration = aws_launch_configuration.matrix_lc.id
+  launch_template {
+    id      = aws_launch_template.matrix_lt.id
+    version = "$Latest"
+  }
   vpc_zone_identifier  = module.vpc.public_subnets
 
   min_size = 1
@@ -257,9 +262,9 @@ output "asg_info" {
   value = "ASG Name: ${aws_autoscaling_group.matrix_asg.name}, ASG ID: ${aws_autoscaling_group.matrix_asg.id}"
 }
 
-# Muestra la ID del grupo de lanzamiento y el nombre como salida
-output "lc_info" {
-  value = "LC Name: ${aws_launch_configuration.matrix_lc.name}, LC ID: ${aws_launch_configuration.matrix_lc.id}"
+# Muestra la ID de la plantilla de lanzamiento y el nombre como salida
+output "lt_info" {
+  value = "LT Name: ${aws_launch_template.matrix_lt.name}, LT ID: ${aws_launch_template.matrix_lt.id}"
 }
 
 # Muestra la ID del grupo de balanceo de carga y el nombre como salida
