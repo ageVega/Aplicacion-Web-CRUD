@@ -263,9 +263,34 @@ resource "aws_lb_listener" "matrix_https" {
   }
 }
 
+# Crea un Application Load Balancer para amodecasa.agevega.com
+resource "aws_lb" "amodecasa_alb" {
+  name               = "Amodecasa-AmoDeCasa"
+  internal           = false # Crea un balanceador de carga público accesible desde Internet
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.matrix_sg.id]
+  subnets            = module.vpc.public_subnets
+
+  tags = {
+    Name = "Amodecasa-AmoDeCasa"
+  }
+}
+
+# Crea un Listener para el puerto 80 para amodecasa.agevega.com
+resource "aws_lb_listener" "amodecasa_http" {
+  load_balancer_arn = aws_lb.amodecasa_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.matrix_tg.arn
+  }
+}
+
 # Crea un Listener para el puerto 443 para amodecasa.agevega.com
 resource "aws_lb_listener" "amodecasa_https" {
-  load_balancer_arn = aws_lb.matrix_alb.arn
+  load_balancer_arn = aws_lb.amodecasa_alb.arn
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
@@ -340,7 +365,7 @@ output "tg_info" {
   value = "TG Name: ${aws_lb_target_group.matrix_tg.name}, TG ID: ${aws_lb_target_group.matrix_tg.id}"
 }
 
-# Muestra la ID del grupo de balanceo de carga y el nombre como salida
+# Muestra la ID del grupo de balanceo de carga y el nombre como salida para matrix.agevega.com
 output "alb_info" {
   value = "ALB Name: ${aws_lb.matrix_alb.name}, ALB ID: ${aws_lb.matrix_alb.id}"
 }
@@ -355,11 +380,25 @@ output "listener_443_info" {
   value       = "Listener ARN: ${aws_lb_listener.matrix_https.arn}"
 }
 
+output "alb_dns_name" {
+  value = aws_lb.matrix_alb.dns_name
+}
+
+# Muestra la ID del grupo de balanceo de carga y el nombre como salida para amodecasa.agevega.com
+output "alb_amodecasa_info" {
+  value = "ALB Name: ${aws_lb.amodecasa_alb.name}, ALB ID: ${aws_lb.amodecasa_alb.id}"
+}
+
+output "listener_80_amodecasa_info" {
+  description = "Information about the Listener for port 80"
+  value       = "Listener ARN: ${aws_lb_listener.amodecasa_http.arn}"
+}
+
 output "listener_443_amodecasa_info" {
-  description = "Information about the Listener for port 443 for amodecasa.agevega.com"
+  description = "Information about the Listener for port 443"
   value       = "Listener ARN: ${aws_lb_listener.amodecasa_https.arn}"
 }
 
-output "alb_dns_name" {
-  value = aws_lb.matrix_alb.dns_name
+output "alb_dns_name_amodecasa" {
+  value = aws_lb.amodecasa_alb.dns_name
 }
