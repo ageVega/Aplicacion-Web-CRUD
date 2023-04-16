@@ -117,6 +117,7 @@ resource "aws_security_group_rule" "matrix_sg_ingress_all" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 }
+*/
 
 resource "aws_security_group_rule" "matrix_sg_ingress_ssh" {
   security_group_id = aws_security_group.matrix_sg.id
@@ -127,7 +128,6 @@ resource "aws_security_group_rule" "matrix_sg_ingress_ssh" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 }
-*/
 
 resource "aws_security_group_rule" "matrix_sg_ingress_http" {
   security_group_id = aws_security_group.matrix_sg.id
