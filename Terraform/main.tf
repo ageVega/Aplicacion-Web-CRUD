@@ -293,7 +293,6 @@ resource "aws_autoscaling_group" "matrix_asg" {
 }
 
 
-
 # OUTPUTS
 # --------------------------------------
 
