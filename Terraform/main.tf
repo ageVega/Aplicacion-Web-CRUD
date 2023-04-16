@@ -65,6 +65,11 @@ variable "certificate_arn" {
   type        = string
 }
 
+variable "certificate_arn_amodecasa" {
+  description = "The ARN of the SSL certificate for the HTTPS listener for amodecasa.agevega.com"
+  type        = string
+}
+
 # RECURSOS
 # --------------------------------------
 
@@ -258,6 +263,20 @@ resource "aws_lb_listener" "matrix_https" {
   }
 }
 
+# Crea un Listener para el puerto 443 para amodecasa.agevega.com
+resource "aws_lb_listener" "amodecasa_https" {
+  load_balancer_arn = aws_lb.matrix_alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.certificate_arn_amodecasa
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.matrix_tg.arn
+  }
+}
+
 # Crea un grupo de autoescalado
 resource "aws_autoscaling_group" "matrix_asg" {
   name_prefix          = "Matrix-AmoDeCasa"
@@ -334,6 +353,11 @@ output "listener_80_info" {
 output "listener_443_info" {
   description = "Information about the Listener for port 443"
   value       = "Listener ARN: ${aws_lb_listener.matrix_https.arn}"
+}
+
+output "listener_443_amodecasa_info" {
+  description = "Information about the Listener for port 443 for amodecasa.agevega.com"
+  value       = "Listener ARN: ${aws_lb_listener.amodecasa_https.arn}"
 }
 
 output "alb_dns_name" {
