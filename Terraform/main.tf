@@ -2,6 +2,10 @@
 # VARIABLES
 # --------------------------------------
 
+variable "repository_branch" {
+  default = "dev"
+}
+
 variable "aws_region" {
   default = "eu-west-1"
 }
@@ -117,6 +121,7 @@ resource "aws_security_group_rule" "matrix_sg_ingress_all" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 }
+*/
 
 resource "aws_security_group_rule" "matrix_sg_ingress_ssh" {
   security_group_id = aws_security_group.matrix_sg.id
@@ -127,7 +132,6 @@ resource "aws_security_group_rule" "matrix_sg_ingress_ssh" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 }
-*/
 
 resource "aws_security_group_rule" "matrix_sg_ingress_http" {
   security_group_id = aws_security_group.matrix_sg.id
@@ -191,7 +195,7 @@ resource "aws_launch_template" "matrix_lt" {
   apt-get install libpq-dev -y
   export PATH=$PATH:/usr/bin/pg_config
   apt-get install postgresql -y
-  git clone https://github.com/ageVega/Aplicacion-Web-CRUD.git
+  git clone --branch ${var.repository_branch} https://github.com/ageVega/Aplicacion-Web-CRUD.git
   pip install -r Aplicacion-Web-CRUD/requirements.txt
   cat << EOT >> Aplicacion-Web-CRUD/.env
   DB_HOST=${var.db_host}
