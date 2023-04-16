@@ -191,7 +191,7 @@ resource "aws_launch_template" "matrix_lt" {
   apt-get install libpq-dev -y
   export PATH=$PATH:/usr/bin/pg_config
   apt-get install postgresql -y
-  git clone https://github.com/ageVega/Aplicacion-Web-CRUD.git
+  git clone https://github.com/ageVega/Aplicacion-Web-CRUD.git && git checkout dev
   pip install -r Aplicacion-Web-CRUD/requirements.txt
   cat << EOT >> Aplicacion-Web-CRUD/.env
   DB_HOST=${var.db_host}
