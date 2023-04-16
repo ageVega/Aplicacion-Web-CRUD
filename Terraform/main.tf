@@ -263,6 +263,7 @@ resource "aws_lb_listener" "matrix_https" {
   }
 }
 
+# Asocia el segundo certificado al listener HTTPS
 resource "aws_lb_listener_certificate" "matrix_https_amodecasa" {
   listener_arn    = aws_lb_listener.matrix_https.arn
   certificate_arn = var.certificate_arn_amodecasa
