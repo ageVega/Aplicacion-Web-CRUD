@@ -1,8 +1,16 @@
 # Aplicacion-Web-CRUD
 
-Ejemplo práctico en el que crearemos una web completa usando Python y JavaScript. Crearemos un Backend usando el Framework de Python Flask y el frontend lo crearemos usando Javascript puro (Vanilla Javascript) desde cero. 
+Este proyecto consiste en una aplicación web de gestión de tareas domésticas con una REST API en Flask, un frontend en Vanilla JavaScript y estilos aplicados mediante Bootstrap 5, todo ello desplegado en AWS mediante Terraform.
 
-Básicamente crearemos una REST API, más un frontend, y lo estilizaremos con bootstrap5.
+El frontend se desarrolla usando Vanilla JavaScript, lo que permite agregar, editar, eliminar y visualizar tareas con interacción del usuario. Se utiliza Bootstrap 5 para proporcionar estilos a la aplicación.
+
+El backend se crea con el framework Flask de Python, e implementa una REST API para gestionar las tareas y la autenticación de usuarios basada en hogares. La base de datos empleada es PostgreSQL.
+
+El proyecto también incluye un archivo Dockerfile para construir una imagen de Docker basada en Ubuntu y un archivo Terraform para desplegar la infraestructura en AWS.
+
+El archivo Dockerfile define las variables de entorno necesarias para la conexión a la base de datos y expone el puerto 8080. También contiene scripts para instalar paquetes, clonar el repositorio del proyecto y ejecutar la aplicación.
+
+La configuración de Terraform crea una VPC con subredes públicas y privadas, un grupo de seguridad, una plantilla de lanzamiento, un grupo de autoescalado, un Application Load Balancer con listeners para puertos 80 y 443, y un Target Group. Incluye variables para personalizar aspectos como la región de AWS entre otros.
 
 Tutorial: https://www.youtube.com/watch?v=Qqgry8mezC8&t=7506s
 
