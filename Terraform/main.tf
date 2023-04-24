@@ -93,7 +93,7 @@ module "vpc" {
   azs                  = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
   public_subnets       = var.public_subnets
   private_subnets      = var.private_subnets
-  enable_nat_gateway   = true # La NAT Gateway permite a las instancias en subredes privadas acceder a Internet
+  enable_nat_gateway   = false # La NAT Gateway permite a las instancias en subredes privadas acceder a Internet (Muy caro...)
   single_nat_gateway   = true # Esta línea indica que se debe utilizar una sola NAT Gateway para todas las zonas de disponibilidad (AZs) en lugar de crear una NAT Gateway por zona de disponibilidad
   enable_vpn_gateway   = false # Un VPN Gateway se utiliza para establecer conexiones de red privada virtual (VPN) entre tu VPC y tu red local o entre dos VPC diferentes
   enable_dns_hostnames = true # Las instancias en el VPC recibirán un nombre de host privado. Esto facilita la conexión y la comunicación entre las instancias en el VPC utilizando nombres de host en lugar de direcciones IP
