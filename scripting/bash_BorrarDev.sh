@@ -2,8 +2,6 @@
 
 git checkout master
 
-git branch -d dev
-
 git branch -D dev
 
 git push origin --delete dev
