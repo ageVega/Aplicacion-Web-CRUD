@@ -44,7 +44,7 @@ variable "instance_type" {
 }
 
 variable "key_pair" {
-  default = "miami"
+  default = "toronto"
 }
 
 variable "domain_name" {
@@ -66,11 +66,6 @@ variable "secret_key" {
 
 variable "certificate_arn" {
   description = "The ARN of the SSL certificate for the HTTPS listener"
-  type        = string
-}
-
-variable "certificate_arn_amodecasa" {
-  description = "The ARN of the SSL certificate for the HTTPS listener for amodecasa.agevega.com"
   type        = string
 }
 
@@ -265,12 +260,6 @@ resource "aws_lb_listener" "matrix_https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.matrix_tg.arn
   }
-}
-
-# Asocia el segundo certificado al listener HTTPS
-resource "aws_lb_listener_certificate" "matrix_https_amodecasa" {
-  listener_arn    = aws_lb_listener.matrix_https.arn
-  certificate_arn = var.certificate_arn_amodecasa
 }
 
 # Crea un grupo de autoescalado
