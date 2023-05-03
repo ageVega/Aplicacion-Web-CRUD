@@ -3,7 +3,7 @@
 # --------------------------------------
 
 variable "repository_branch" {
-  default = "dev"
+  default = "master"
 }
 
 variable "aws_region" {
