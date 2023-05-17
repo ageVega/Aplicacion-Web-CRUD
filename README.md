@@ -86,6 +86,8 @@ sudo apt install python3-pip
 $ pip install virtualenv
 
 $ python -m virtualenv venv
+ 
+$ source venv/Scripts/activate
 ```
 
 F1 --> Python: Select Interpreter --> .\venv\Scripts\python.exe --> New terminal
