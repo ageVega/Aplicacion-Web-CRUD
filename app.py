@@ -1,12 +1,10 @@
 # app.py
 import os
-from dotenv import load_dotenv
-from flask import Flask, request, jsonify, render_template, redirect, url_for
-from flask_login import LoginManager, current_user, login_required
 from api import api
-from login import login_blueprint
-from login import login_manager  # Importa la instancia de LoginManager desde login.py
-from flask import session
+from login import login_blueprint, login_manager
+from dotenv import load_dotenv
+from flask import Flask, session, render_template, redirect, url_for
+from flask_login import current_user, login_required
 
 load_dotenv()  # Carga las variables de entorno desde .env
 
@@ -19,14 +17,6 @@ login_manager.init_app(app)
 login_manager.login_view = "auth.login"  # Establece la vista de inicio de sesión
 
 
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    house_name = session.get('house_name', 'Invitado')
-    return render_template('dashboard.html', house_name=house_name)
-
-
-
 @app.route('/')
 def index():
     return redirect(url_for('home'))
@@ -37,6 +27,11 @@ def home():
         return redirect(url_for('dashboard'))
     return render_template('home.html')
 
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    house_name = session.get('house_name', 'Invitado')
+    return render_template('dashboard.html', house_name=house_name)
 
 
 if __name__ == "__main__":

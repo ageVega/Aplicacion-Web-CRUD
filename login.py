@@ -1,9 +1,9 @@
 # login.py
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
-from psycopg2 import connect, extras
 from os import environ
 from dotenv import load_dotenv
+from psycopg2 import connect, extras
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 
 load_dotenv()  # Carga las variables de entorno desde .env

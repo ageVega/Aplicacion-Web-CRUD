@@ -13,6 +13,7 @@ git checkout master && git pull
 # git tag -l 'v*' | sort -V | tail -n 1 | sed 's/^v//' | while IFS=. read major minor patch; do printf "v%d.%d.%d" $major $minor $((patch + 1)); done
 
 VERSION_ACTUALIZADA=$(git tag -l 'v*' | sort -V | tail -n 1 | sed 's/^v//' | while IFS=. read major minor patch; do printf "v%d.%d.%d" $major $minor $((patch + 1)); done)
+#VERSION_ACTUALIZADA="v1.1.0"
 
 git tag -a $VERSION_ACTUALIZADA -m "$VERSION_ACTUALIZADA"
 
