@@ -24,6 +24,12 @@
         {% block main %}{% endblock %}
     </main>
 
+    {% block footer %}
+        <footer class="text-center mt-5">
+            <p>&copy; 2023 Amo de Casa. Todos los derechos reservados.</p>
+        </footer>
+    {% endblock %}
+
     <script src="{{ url_for('static', filename='main.js') }}"></script>
     {% block scripts %}
     {% endblock %}
