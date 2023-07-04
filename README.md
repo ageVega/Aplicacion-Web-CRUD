@@ -20,7 +20,7 @@ Tutorial: https://www.youtube.com/watch?v=Qqgry8mezC8&t=7506s
 
 2. Copiar archivo .env
 
-3. $ python app.py
+3. $ python -m src.app
 
 4. Acceder a través de http://<ip>:8080
 
