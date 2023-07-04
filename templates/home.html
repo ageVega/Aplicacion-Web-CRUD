@@ -1,35 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- home.html -->
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amo de Casa - Inicio</title>
-    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
-    <link rel="stylesheet" href="https://bootswatch.com/5/yeti/bootstrap.min.css">
-</head>
+{% block title %}Inicio{% endblock %}
 
-<body class="bg-dark text-white">
-
+{% block header %}
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="#">Amo de Casa</a>
+                <a class="navbar-brand" href="/">Amo de Casa</a>
             </div>
         </nav>
     </header>
+{% endblock %}
 
-    <main class="container mt-5">
-        <h1 class="text-center mb-4">Bienvenido a Tu Casa</h1>
-        <div class="d-flex justify-content-center">
-            <a href="{{ url_for('auth.register') }}" class="btn btn-primary mr-2">Registrarse</a>
-            <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Iniciar sesión</a>            
-        </div>
-    </main>
-
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
-
-</body>
-
-</html>
+{% block main %}
+    <h1 class="text-center mb-4">Bienvenido a Tu Casa</h1>
+    <div class="d-flex justify-content-center">
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary mr-2">Registrarse</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Iniciar sesión</a>            
+    </div>
+{% endblock %}

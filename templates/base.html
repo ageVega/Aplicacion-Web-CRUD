@@ -1,0 +1,40 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Responsive con dispositivos moviles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titulo -->
+    <title>Amo de Casa - {% block title %}{% endblock %}</title>
+    <!-- Logo -->
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
+    <!-- Custom css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <!-- Bootstrap 4.3.1 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="bg-dark text-white">
+
+    {% block header %}{% endblock %}
+
+    <main class="container mt-5">
+        {% block main %}{% endblock %}
+    </main>
+
+    {% block footer %}
+        <footer class="text-center mt-5">
+            <p>&copy; 2023 Amo de Casa. Todos los derechos reservados.</p>
+        </footer>
+    {% endblock %}
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+
+</html>
