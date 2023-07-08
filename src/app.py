@@ -1,17 +1,18 @@
 # app.py
-import os
-from api import api
-from login import login_blueprint, login_manager
+from .login import login_blueprint, login_manager
+from .api import api_blueprint
+from os import environ
 from dotenv import load_dotenv
 from flask import Flask, session, render_template, redirect, url_for
 from flask_login import current_user, login_required
 
 load_dotenv()  # Carga las variables de entorno desde .env
 
-app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY')  # Necesario para flask-login
-app.register_blueprint(api)
+app = Flask(__name__, template_folder='../templates', static_folder='../static')
+app.secret_key = environ.get('SECRET_KEY')  # Se utiliza para cifrar las cookies de sesión del usuario, Flask-Login utiliza estas cookies para recordar a los usuarios entre solicitudes.
+
 app.register_blueprint(login_blueprint, url_prefix='/auth')
+app.register_blueprint(api_blueprint, url_prefix='/api')
 
 login_manager.init_app(app)
 login_manager.login_view = "auth.login"  # Establece la vista de inicio de sesión
@@ -34,6 +35,7 @@ def dashboard():
     return render_template('dashboard.html', house_name=house_name)
 
 
+"""
 if __name__ == "__main__":
     from waitress import serve
     serve(app, host="0.0.0.0", port=8080)
@@ -41,4 +43,3 @@ if __name__ == "__main__":
 """
 if __name__ == '__main__':
     app.run(debug=True)
-"""
