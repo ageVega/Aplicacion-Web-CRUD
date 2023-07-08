@@ -12,7 +12,7 @@ app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.secret_key = environ.get('SECRET_KEY')  # Se utiliza para cifrar las cookies de sesión del usuario, Flask-Login utiliza estas cookies para recordar a los usuarios entre solicitudes.
 
 app.register_blueprint(login_blueprint, url_prefix='/auth')
-app.register_blueprint(api_blueprint)
+app.register_blueprint(api_blueprint, url_prefix='/api')
 
 login_manager.init_app(app)
 login_manager.login_view = "auth.login"  # Establece la vista de inicio de sesión
