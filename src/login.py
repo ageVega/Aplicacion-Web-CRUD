@@ -1,7 +1,5 @@
 # login.py
-from .connection import get_connection
 from .house import House, get_house_by_id, get_house_by_house_name, create_house
-from psycopg2 import extras
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
