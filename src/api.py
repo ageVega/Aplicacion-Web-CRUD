@@ -1,34 +1,14 @@
 # api.py
-import os
-from dotenv import load_dotenv
-from psycopg2 import connect, extras
+from .connection import get_connection
+from psycopg2 import extras
 from flask import Blueprint, jsonify, request
-from flask_login import UserMixin
 from flask_login import login_required, current_user
 
-load_dotenv()  # Carga las variables de entorno desde .env
+# Define un Blueprint para la API. Un Blueprint es un conjunto de rutas que pueden ser registradas en una aplicación Flask.
+api_blueprint = Blueprint('api', __name__)
 
-api = Blueprint('api', __name__)
-
-# Accede a las variables de entorno
-host = os.environ.get('DB_HOST')
-port = os.environ.get('DB_PORT')
-dbname = os.environ.get('DB_DATABASE')
-username = os.environ.get('DB_USER')
-password = os.environ.get('DB_PASSWORD')
-
-def get_connection():
-    conn = connect(host=host, port=port, dbname=dbname, user=username, password=password)
-    return conn
-
-# Clase de casa para flask-login
-class House(UserMixin):
-    def __init__(self, id, house_name, password):
-        self.id = id
-        self.house_name = house_name
-        self.password = password
-
-@api.route('/api/tasks', methods=['GET'])
+# Devuelve todas las tareas
+@api_blueprint.route('/api/tasks', methods=['GET'])
 @login_required
 def get_tasks():
     house_id = request.args.get('house_id')
@@ -43,7 +23,8 @@ def get_tasks():
 
     return jsonify(tasks)
 
-@api.route('/api/tasks', methods=['POST'])
+# Crea una nueva tarea
+@api_blueprint.route('/api/tasks', methods=['POST'])
 @login_required
 def create_task():
     new_task = request.get_json()
@@ -62,16 +43,15 @@ def create_task():
 
     return jsonify(new_created_task)
 
-@api.route('/api/tasks/<int:id>', methods=['DELETE'])
+# Devuelve una tarea existente
+@api_blueprint.route('/api/tasks/<int:id>', methods=['GET'])
 @login_required
-def delete_task(id):
+def get_task(id):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
 
-    cur.execute('DELETE FROM tasks WHERE id = %s RETURNING *', (id,))
+    cur.execute('SELECT * FROM tasks WHERE id = %s', (id,))
     task = cur.fetchone()
-
-    conn.commit()
 
     cur.close()
     conn.close()
@@ -81,7 +61,8 @@ def delete_task(id):
 
     return jsonify(task)
 
-@api.route('/api/tasks/<int:id>', methods=['PUT'])
+# Modifica una tarea existente
+@api_blueprint.route('/api/tasks/<int:id>', methods=['PUT'])
 @login_required
 def update_task(id):
     new_task = request.get_json()
@@ -105,14 +86,17 @@ def update_task(id):
 
     return jsonify(updated_task)
 
-@api.route('/api/tasks/<int:id>', methods=['GET'])
+# Borra una tarea existente
+@api_blueprint.route('/api/tasks/<int:id>', methods=['DELETE'])
 @login_required
-def get_task(id):
+def delete_task(id):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
 
-    cur.execute('SELECT * FROM tasks WHERE id = %s', (id,))
+    cur.execute('DELETE FROM tasks WHERE id = %s RETURNING *', (id,))
     task = cur.fetchone()
+
+    conn.commit()
 
     cur.close()
     conn.close()
