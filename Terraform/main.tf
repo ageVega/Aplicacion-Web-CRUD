@@ -200,7 +200,7 @@ resource "aws_launch_template" "matrix_lt" {
   DB_PASSWORD=${var.db_password}
   SECRET_KEY=${var.secret_key}
   EOT
-  python3 Aplicacion-Web-CRUD/app.py
+  python3 -m Aplicacion-Web-CRUD.src.app
   EOF
   )
 
