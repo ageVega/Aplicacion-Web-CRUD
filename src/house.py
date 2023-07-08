@@ -2,7 +2,7 @@
 from .connection import get_connection
 from psycopg2 import extras
 from flask_login import UserMixin
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # Definición de la clase House
 class House(UserMixin):
@@ -38,3 +38,23 @@ def get_house_by_house_name(house_name):
     cursor.close()
     conn.close()
     return house
+
+def create_house(house_name, password):
+    hashed_password = generate_password_hash(password)
+
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+
+    try:
+        cur.execute('INSERT INTO houses (house_name, password) VALUES (%s, %s) RETURNING id, house_name, password', 
+                    (house_name, hashed_password))
+        house_data = cur.fetchone()
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return None, str(e)
+
+    cur.close()
+    conn.close()
+
+    return House(house_data['id'], house_data['house_name'], house_data['password']), None

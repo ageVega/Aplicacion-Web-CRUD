@@ -1,10 +1,10 @@
 # login.py
 from .connection import get_connection
-from .house import House, get_house_by_id, get_house_by_house_name
+from .house import House, get_house_by_id, get_house_by_house_name, create_house
 from psycopg2 import extras
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 
 # Crea una instancia de LoginManager, que maneja el proceso de autenticación de usuarios.
 login_manager = LoginManager()
@@ -28,21 +28,9 @@ def register():
             flash("Las contraseñas no coinciden. Por favor, inténtalo de nuevo.", "danger")
             return redirect(url_for('auth.register_form'))
 
-        hashed_password = generate_password_hash(password)
-
-        conn = get_connection()
-        cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-        try:
-            cur.execute('INSERT INTO houses (house_name, password) VALUES (%s, %s) RETURNING id, house_name', (house_name, hashed_password))
-            house_data = cur.fetchone()
-            conn.commit()
-        except Exception as e:
-            conn.rollback()
-            return jsonify({'message': str(e)}), 400
-
-        cur.close()
-        conn.close()
+        house, error = create_house(house_name, password)
+        if error:
+            return jsonify({'message': error}), 400
 
         return redirect(url_for('home'))  # Redirige a la ruta principal al registrarse
     else:
