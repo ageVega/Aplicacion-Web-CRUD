@@ -9,6 +9,6 @@ CREATE TABLE houses (
 CREATE TABLE tasks (
     id SERIAL PRIMARY KEY,
     task VARCHAR(255) NOT NULL,
-    priority INTEGER CHECK (priority >= 1 AND priority <= 5) NOT NULL,
+    priority INTEGER CHECK (priority >= 1 AND priority <= 7) NOT NULL,
     house_id INTEGER REFERENCES houses(id) ON DELETE CASCADE
 );

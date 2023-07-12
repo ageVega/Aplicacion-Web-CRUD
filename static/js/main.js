@@ -17,6 +17,8 @@ function priorityText(priority) {
         case 3: return "Importante";
         case 4: return "Moderado";
         case 5: return "Menor";
+        case 6: return "Trivial";
+        case 7: return "Otro";
         default: return "";
     }
 }
