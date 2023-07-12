@@ -47,11 +47,13 @@ file_paths = [
     os.path.join(script_dir, os.pardir, '.gitignore'),
     os.path.join(script_dir, os.pardir, 'requirements.txt'),
     os.path.join(script_dir, os.pardir, 'database.sql'),
+    # Python
     os.path.join(script_dir, os.pardir, 'src', 'app.py'),
     os.path.join(script_dir, os.pardir, 'src', 'connection.py'),
     os.path.join(script_dir, os.pardir, 'src', 'house.py'),
     os.path.join(script_dir, os.pardir, 'src', 'login.py'),
     os.path.join(script_dir, os.pardir, 'src', 'api.py'),
+    # HTML, CSS, JS
     os.path.join(script_dir, os.pardir, 'templates', 'base.html'),
     os.path.join(script_dir, os.pardir, 'templates', 'home.html'),
     os.path.join(script_dir, os.pardir, 'templates', 'dashboard.html'),
@@ -59,6 +61,14 @@ file_paths = [
     os.path.join(script_dir, os.pardir, 'templates', 'register.html'),
     os.path.join(script_dir, os.pardir, 'static', 'js', 'main.js'),
     os.path.join(script_dir, os.pardir, 'static', 'css', 'main.css'),
+    # Terraform
+    #os.path.join(script_dir, os.pardir, 'Terraform', 'main.tf'),
+    #os.path.join(script_dir, os.pardir, 'Terraform', 'terraform.tfvars.example'),
+    # Docker
+    #os.path.join(script_dir, os.pardir, 'Docker', 'Dockerfile'),
+    #os.path.join(script_dir, os.pardir, 'Docker', 'scripts', 'packages.sh'),
+    #os.path.join(script_dir, os.pardir, 'Docker', 'scripts', 'clone-repo.sh'),
+    #os.path.join(script_dir, os.pardir, 'Docker', 'scripts', 'run.sh'),
 ]
 
 # Especifica la ruta de salida
