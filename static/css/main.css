@@ -35,7 +35,7 @@ footer {
     flex-shrink: 0;
 }
 
-.btn-edit {
+.btn-prio {
     background-color: #ffffff; /* White background */
     border: 2px solid #6c757d; /* Dark gray */
     color: #000000; /* Black text */
@@ -49,14 +49,14 @@ footer {
     height: 36px; /* Ensure a minimum height */
 }
 
-.btn-edit:hover {
+.btn-prio:hover {
     text-decoration: none; /* This avoids the text being underlined */
     color: #000000; /* Here you set the color you want for the text when the mouse is over */
     background-color: #f0f0f0; /* Here you set the color you want for the background when the mouse is over */
 }
 
 
-.btn-edit,
+.btn-prio,
 .form-select {
     height: 38px;
 }

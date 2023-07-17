@@ -72,6 +72,51 @@ if (priorityNameForm) {
     });
 }
 
+taskForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const task = taskForm['tarea'].value;
+    const priority = taskForm['prioridad'].value;
+    const house_id = houseId;
+
+    if (!editing) {
+        const response = await fetch('/api/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                task,
+                priority,
+                house_id
+            })
+        });
+
+        const data = await response.json();
+        tareas.push(data);
+    } else {
+        const response = await fetch(`/api/tasks/${tareaId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                task,
+                priority,
+                house_id
+            })
+        });
+
+        const updatedTask = await response.json();
+        tareas = tareas.map(tarea => tarea.id === updatedTask.id ? updatedTask : tarea);
+        editing = false;
+        tareaId = null;
+    }
+
+    reloadPage();
+    taskForm.reset();
+});
+
 function clearPriorityNameForm() {
     // Establece el valor de select y input a vacío
     priorityNameForm['priorityLevel'].value = '';

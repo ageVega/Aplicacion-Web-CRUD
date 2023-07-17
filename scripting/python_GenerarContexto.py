@@ -61,7 +61,7 @@ file_paths = [
     #os.path.join(script_dir, os.pardir, 'templates', 'register.html'),
     os.path.join(script_dir, os.pardir, 'templates', 'priority_names.html'),
     os.path.join(script_dir, os.pardir, 'static', 'js', 'main.js'),
-    #os.path.join(script_dir, os.pardir, 'static', 'css', 'main.css'),
+    os.path.join(script_dir, os.pardir, 'static', 'css', 'main.css'),
     # Terraform
     #os.path.join(script_dir, os.pardir, 'Terraform', 'main.tf'),
     #os.path.join(script_dir, os.pardir, 'Terraform', 'terraform.tfvars.example'),
