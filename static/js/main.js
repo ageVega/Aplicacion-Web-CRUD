@@ -5,7 +5,7 @@ const priorityNameForm = document.querySelector('#priorityNameForm');
 
 const houseId = '{{current_user.id}}'; 
 
-const prioritySelect = document.querySelector('select[name="prioridad"]');
+let prioritySelect = document.querySelector('select[name="prioridad"]');
 
 let tareas = [];
 let priorityNames = [];
@@ -21,7 +21,7 @@ function priorityText(priority) {
 
 window.addEventListener('DOMContentLoaded', async () => {
     clearHouseIdOnLogout();
-    if (taskList) {  // Agrega esta verificación
+    if (taskList) {  
         const responseTasks = await fetch(`/api/tasks?house_id=${houseId}`);
         const dataTasks = await responseTasks.json();
         tareas = dataTasks;
@@ -31,59 +31,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     const dataPriorities = await responsePriorities.json();
     priorityNames = dataPriorities;
     
-    updatePrioritySelect(priorityNames);  // Llama a la nueva función
+    // Quítalo si el select aún no existe en este punto.
+    // updatePrioritySelect(priorityNames);  
 
-    if (taskList) {  // Agrega esta verificación
+    if (taskList) {  
         renderTask(tareas);
     }
 });
-
-if (taskForm) { 
-    taskForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const task = taskForm['tarea'].value;
-        const priority = taskForm['prioridad'].value;
-        const house_id = houseId;
-
-        if (!editing) {
-            const response = await fetch('/api/tasks', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    task,
-                    priority,
-                    house_id
-                })
-            });
-
-            const data = await response.json();
-            tareas.push(data);
-        } else {
-            const response = await fetch(`/api/tasks/${tareaId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    task,
-                    priority,
-                    house_id
-                })
-            });
-
-            const updatedTask = await response.json();
-            tareas = tareas.map(tarea => tarea.id === updatedTask.id ? updatedTask : tarea);
-            editing = false;
-            tareaId = null;
-        }
-
-        reloadPage();
-        taskForm.reset();
-    });
-}
 
 if (priorityNameForm) { 
     priorityNameForm.addEventListener('submit', async (e) => {
@@ -107,9 +61,12 @@ if (priorityNameForm) {
         const updatedPriorityName = await response.json();
 
         priorityNames = priorityNames.map(p => p.level === updatedPriorityName.level ? updatedPriorityName : p);
-        updatePrioritySelect(priorityNames);
-        renderTask(tareas);
 
+        // Reasigna prioritySelect antes de llamar a updatePrioritySelect
+        prioritySelect = document.querySelector('select[name="prioridad"]');
+        updatePrioritySelect(priorityNames);
+        reloadPage();
+    
         // Limpia el formulario
         clearPriorityNameForm();
     });
@@ -119,16 +76,24 @@ function clearPriorityNameForm() {
     // Establece el valor de select y input a vacío
     priorityNameForm['priorityLevel'].value = '';
     priorityNameForm['priorityName'].value = '';
+    console.log('Formulario limpiado'); // Añade esta línea
 }
 
 async function reloadPage() {
     const response = await fetch('/api/tasks');
     const data = await response.json();
     tareas = data;
-    renderTask(tareas);
+    
+    if (taskList) {
+        renderTask(tareas);
+    }
 }
 
 function renderTask(tareas) {
+    if (!taskList) {
+        return;
+    }
+
     taskList.innerHTML = '';
     tareas = sortTasks(tareas, true);
 
@@ -208,6 +173,14 @@ function updatePriorityNames(priorityNames) {
 }
 
 function updatePrioritySelect(priorityNames) {
+    // Mover la asignación de prioritySelect aquí
+    let prioritySelect = document.querySelector('select[name="prioridad"]');
+
+    if (!prioritySelect) {
+        // No intentar actualizar el select si no existe.
+        return;
+    }
+    
     priorityNames.sort((a, b) => a.level - b.level);  // Añadir esta línea para ordenar las prioridades por su nivel
     
     prioritySelect.innerHTML = '';
