@@ -39,13 +39,22 @@ footer {
     background-color: #ffffff; /* White background */
     border: 2px solid #6c757d; /* Dark gray */
     color: #000000; /* Black text */
-    text-align: center;
-    text-decoration: none;
+    display: inline-flex; /* Use flex layout */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
     font-size: 14px; /* Smaller text */
-    padding: 4px 8px; /* Smaller button */
+    padding: 6px 8px; /* Adjust padding */
     cursor: pointer;
     border-radius: 6px; /* Less rounded corners */
+    height: 36px; /* Ensure a minimum height */
 }
+
+.btn-edit:hover {
+    text-decoration: none; /* This avoids the text being underlined */
+    color: #000000; /* Here you set the color you want for the text when the mouse is over */
+    background-color: #f0f0f0; /* Here you set the color you want for the background when the mouse is over */
+}
+
 
 .btn-edit,
 .form-select {
