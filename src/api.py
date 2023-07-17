@@ -185,3 +185,33 @@ def update_priority_name(level):
         return jsonify({'message': 'Priority name not found'}), 404
 
     return jsonify(updated_priority_name)
+
+@api_blueprint.route('/reset_priority_names', methods=['POST'])
+@login_required
+def reset_priority_names():
+    default_priorities = [
+        (1, 'Crítica'),
+        (2, 'Urgente'),
+        (3, 'Importante'),
+        (4, 'Moderado'),
+        (5, 'Menor'),
+        (6, 'Trivial'),
+        (7, 'Otro'),
+    ]
+
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+
+    try:
+        for level, name in default_priorities:
+            cur.execute('UPDATE priority_levels SET name = %s WHERE level = %s AND house_id = %s',
+                        (name, level, current_user.id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(f"Error resetting priority names: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return get_priority_levels()

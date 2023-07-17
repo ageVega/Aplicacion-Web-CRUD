@@ -2,6 +2,7 @@
 const taskForm = document.querySelector('#taskForm');
 const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
 const priorityNameForm = document.querySelector('#priorityNameForm');
+const resetButton = document.querySelector('#resetButton');
 
 const houseId = '{{current_user.id}}'; 
 
@@ -114,6 +115,18 @@ if (taskForm) {
 
         taskForm.reset();
         renderTask(tareas);
+    });
+}
+
+if (resetButton) {
+    resetButton.addEventListener('click', async () => {
+        const response = await fetch('/api/reset_priority_names', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await response.json();
     });
 }
 
