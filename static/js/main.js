@@ -2,7 +2,7 @@
 const taskForm = document.querySelector('#taskForm');
 const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
 const priorityNameForm = document.querySelector('#priorityNameForm');
-const resetButton = document.querySelector('#resetButton');
+const resetPriorityNamesForm = document.querySelector('#resetPriorityNamesForm');
 
 const houseId = '{{current_user.id}}'; 
 
@@ -118,15 +118,27 @@ if (taskForm) {
     });
 }
 
-if (resetButton) {
-    resetButton.addEventListener('click', async () => {
+if (resetPriorityNamesForm) {
+    resetPriorityNamesForm.addEventListener('submit', async (event) => {
+        // Previene el comportamiento por defecto del formulario (recarga de la página)
+        event.preventDefault();
+
+        // Lógica para resetear los nombres de prioridad
         const response = await fetch('/api/reset_priority_names', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
-        const data = await response.json();
+
+        const updatedPriorityNames = await response.json();
+
+        // Actualiza las prioridades en el cliente
+        priorityNames = updatedPriorityNames;
+
+        // Reasigna prioritySelect antes de llamar a updatePrioritySelect
+        prioritySelect = document.querySelector('select[name="prioridad"]');
+        updatePrioritySelect(priorityNames);
     });
 }
 
