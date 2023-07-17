@@ -1,11 +1,11 @@
 // main.js
 const taskForm = document.querySelector('#taskForm');
-const taskList = document.querySelector('#taskList');
+const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
+const priorityNameForm = document.querySelector('#priorityNameForm');
 
 const houseId = '{{current_user.id}}'; 
 
 const prioritySelect = document.querySelector('select[name="prioridad"]');
-const priorityNameForm = document.querySelector('#priorityNameForm');
 
 let tareas = [];
 let priorityNames = [];
@@ -21,9 +21,11 @@ function priorityText(priority) {
 
 window.addEventListener('DOMContentLoaded', async () => {
     clearHouseIdOnLogout();
-    const responseTasks = await fetch(`/api/tasks?house_id=${houseId}`);
-    const dataTasks = await responseTasks.json();
-    tareas = dataTasks;
+    if (taskList) {  // Agrega esta verificación
+        const responseTasks = await fetch(`/api/tasks?house_id=${houseId}`);
+        const dataTasks = await responseTasks.json();
+        tareas = dataTasks;
+    }
 
     const responsePriorities = await fetch(`/api/priority_levels?house_id=${houseId}`);
     const dataPriorities = await responsePriorities.json();
@@ -31,53 +33,87 @@ window.addEventListener('DOMContentLoaded', async () => {
     
     updatePrioritySelect(priorityNames);  // Llama a la nueva función
 
-    renderTask(tareas);
+    if (taskList) {  // Agrega esta verificación
+        renderTask(tareas);
+    }
 });
 
-taskForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
 
-    const task = taskForm['tarea'].value;
-    const priority = taskForm['prioridad'].value;
-    const house_id = houseId;
+if (taskForm) { 
+    taskForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    if (!editing) {
-        const response = await fetch('/api/tasks', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                task,
-                priority,
-                house_id
-            })
-        });
+        const task = taskForm['tarea'].value;
+        const priority = taskForm['prioridad'].value;
+        const house_id = houseId;
 
-        const data = await response.json();
-        tareas.push(data);
-    } else {
-        const response = await fetch(`/api/tasks/${tareaId}`, {
+        if (!editing) {
+            const response = await fetch('/api/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    task,
+                    priority,
+                    house_id
+                })
+            });
+
+            const data = await response.json();
+            tareas.push(data);
+        } else {
+            const response = await fetch(`/api/tasks/${tareaId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    task,
+                    priority,
+                    house_id
+                })
+            });
+
+            const updatedTask = await response.json();
+            tareas = tareas.map(tarea => tarea.id === updatedTask.id ? updatedTask : tarea);
+            editing = false;
+            tareaId = null;
+        }
+
+        reloadPage();
+        taskForm.reset();
+    });
+}
+
+if (priorityNameForm) { 
+    priorityNameForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const level = priorityNameForm['priorityLevel'].value;
+        const name = priorityNameForm['priorityName'].value;
+        const house_id = houseId;
+
+        // Tienes que cambiar esta URL por la correspondiente a tu ruta en Flask para actualizar el nombre de la prioridad
+        const response = await fetch(`/api/priority_names/${level}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                task,
-                priority,
+                name,
                 house_id
             })
         });
 
-        const updatedTask = await response.json();
-        tareas = tareas.map(tarea => tarea.id === updatedTask.id ? updatedTask : tarea);
-        editing = false;
-        tareaId = null;
-    }
+        const updatedPriorityName = await response.json();
 
-    reloadPage();
-    taskForm.reset();
-});
+        // Aquí debes actualizar la variable priorityNames y luego llamar a la función updatePrioritySelect() y renderTask()
+        priorityNames = priorityNames.map(p => p.level === updatedPriorityName.level ? updatedPriorityName : p);
+        updatePrioritySelect(priorityNames);
+        renderTask(tareas);
+    });
+}
 
 async function reloadPage() {
     const response = await fetch('/api/tasks');
@@ -174,30 +210,3 @@ function updatePrioritySelect(priorityNames) {
         prioritySelect.appendChild(option);
     });
 }
-
-priorityNameForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const level = priorityNameForm['priorityLevel'].value;
-    const name = priorityNameForm['priorityName'].value;
-    const house_id = houseId;
-
-    // Tienes que cambiar esta URL por la correspondiente a tu ruta en Flask para actualizar el nombre de la prioridad
-    const response = await fetch(`/api/priority_names/${level}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name,
-            house_id
-        })
-    });
-
-    const updatedPriorityName = await response.json();
-
-    // Aquí debes actualizar la variable priorityNames y luego llamar a la función updatePrioritySelect() y renderTask()
-    priorityNames = priorityNames.map(p => p.level === updatedPriorityName.level ? updatedPriorityName : p);
-    updatePrioritySelect(priorityNames);
-    renderTask(tareas);
-});

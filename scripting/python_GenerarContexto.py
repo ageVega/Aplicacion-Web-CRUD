@@ -43,9 +43,9 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Especifica las rutas de los archivos que quieres leer
 file_paths = [
-    os.path.join(script_dir, os.pardir, '.env.example'),
-    os.path.join(script_dir, os.pardir, '.gitignore'),
-    os.path.join(script_dir, os.pardir, 'requirements.txt'),
+    #os.path.join(script_dir, os.pardir, '.env.example'),
+    #os.path.join(script_dir, os.pardir, '.gitignore'),
+    #os.path.join(script_dir, os.pardir, 'requirements.txt'),
     os.path.join(script_dir, os.pardir, 'database.sql'),
     # Python
     os.path.join(script_dir, os.pardir, 'src', 'app.py'),
@@ -57,10 +57,11 @@ file_paths = [
     os.path.join(script_dir, os.pardir, 'templates', 'base.html'),
     os.path.join(script_dir, os.pardir, 'templates', 'home.html'),
     os.path.join(script_dir, os.pardir, 'templates', 'dashboard.html'),
-    os.path.join(script_dir, os.pardir, 'templates', 'login.html'),
-    os.path.join(script_dir, os.pardir, 'templates', 'register.html'),
+    #os.path.join(script_dir, os.pardir, 'templates', 'login.html'),
+    #os.path.join(script_dir, os.pardir, 'templates', 'register.html'),
+    os.path.join(script_dir, os.pardir, 'templates', 'priority_names.html'),
     os.path.join(script_dir, os.pardir, 'static', 'js', 'main.js'),
-    os.path.join(script_dir, os.pardir, 'static', 'css', 'main.css'),
+    #os.path.join(script_dir, os.pardir, 'static', 'css', 'main.css'),
     # Terraform
     #os.path.join(script_dir, os.pardir, 'Terraform', 'main.tf'),
     #os.path.join(script_dir, os.pardir, 'Terraform', 'terraform.tfvars.example'),

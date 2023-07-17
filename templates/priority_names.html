@@ -1,0 +1,42 @@
+<!-- priority_names.html -->
+{% extends "base.html" %}
+
+{% block title %}Nombres de Prioridad{% endblock %}
+
+{% block extra_css %}
+    <!-- Fuente de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block header %}
+    <header class="sticky-header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/">Amo de Casa</a>
+                <span class="navbar-text">Hola, {{ house_name }}</span>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/auth/logout">Logout</a>
+                </div>
+            </div>
+        </nav>        
+    </header>
+{% endblock %}
+
+{% block main %}
+    <form id="priorityNameForm" class="card card-body text-white" style="background-color: #202020;">
+        <label for="priorityLevel">Nivel de Prioridad</label>
+        <input type="number" name="priorityLevel" placeholder="Nivel de Prioridad" class="form-control mb-2" min="1" max="7" required>
+        <label for="priorityName">Nombre de Prioridad</label>
+        <input type="text" name="priorityName" placeholder="Nombre de Prioridad" class="form-control mb-2" required>
+        <button class="btn btn-primary">Actualizar</button>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        sessionStorage.setItem('house_id', '{{ session["house_id"] }}');
+    </script>
+{% endblock %}
