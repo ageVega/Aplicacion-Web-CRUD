@@ -31,13 +31,13 @@ window.addEventListener('DOMContentLoaded', async () => {
     const dataPriorities = await responsePriorities.json();
     priorityNames = dataPriorities;
     
-    // Quítalo si el select aún no existe en este punto.
-    // updatePrioritySelect(priorityNames);  
+    updatePrioritySelect(priorityNames);  
 
     if (taskList) {  
         renderTask(tareas);
     }
 });
+
 
 if (priorityNameForm) { 
     priorityNameForm.addEventListener('submit', async (e) => {
