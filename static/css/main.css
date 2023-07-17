@@ -34,3 +34,22 @@ main {
 footer {
     flex-shrink: 0;
 }
+
+.btn-edit {
+    background-color: #ffffff; /* White background */
+    border: 2px solid #6c757d; /* Dark gray */
+    color: #000000; /* Black text */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px; /* Smaller text */
+    margin: 4px 2px;
+    padding: 4px 8px; /* Smaller button */
+    cursor: pointer;
+    border-radius: 6px; /* Less rounded corners */
+}
+
+.btn-edit,
+.form-select {
+    height: 38px;
+}
