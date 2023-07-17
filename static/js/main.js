@@ -38,7 +38,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-
 if (taskForm) { 
     taskForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -94,7 +93,6 @@ if (priorityNameForm) {
         const name = priorityNameForm['priorityName'].value;
         const house_id = houseId;
 
-        // Tienes que cambiar esta URL por la correspondiente a tu ruta en Flask para actualizar el nombre de la prioridad
         const response = await fetch(`/api/priority_names/${level}`, {
             method: 'PUT',
             headers: {
@@ -108,11 +106,19 @@ if (priorityNameForm) {
 
         const updatedPriorityName = await response.json();
 
-        // Aquí debes actualizar la variable priorityNames y luego llamar a la función updatePrioritySelect() y renderTask()
         priorityNames = priorityNames.map(p => p.level === updatedPriorityName.level ? updatedPriorityName : p);
         updatePrioritySelect(priorityNames);
         renderTask(tareas);
+
+        // Limpia el formulario
+        clearPriorityNameForm();
     });
+}
+
+function clearPriorityNameForm() {
+    // Establece el valor de select y input a vacío
+    priorityNameForm['priorityLevel'].value = '';
+    priorityNameForm['priorityName'].value = '';
 }
 
 async function reloadPage() {
