@@ -25,6 +25,16 @@
 {% endblock %}
 
 {% block main %}
+    <a href="{{ url_for('priority_names') }}" class="btn btn-secondary">Actualizar Nombres de Prioridad</a>
+
+    <form id="priorityNameForm" class="card card-body text-white" style="background-color: #202020;">
+        <label for="priorityLevel">Nivel de Prioridad</label>
+        <input type="number" name="priorityLevel" placeholder="Nivel de Prioridad" class="form-control mb-2" min="1" max="7" required>
+        <label for="priorityName">Nombre de Prioridad</label>
+        <input type="text" name="priorityName" placeholder="Nombre de Prioridad" class="form-control mb-2" required>
+        <button class="btn btn-primary">Actualizar</button>
+    </form>
+
     <div class="col-md-6 offset-md-3">
         <h1>Tareas de Casa</h1>
         <form id="taskForm" class="card card-body text-white" style="background-color: #202020;">

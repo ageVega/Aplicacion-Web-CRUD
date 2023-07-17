@@ -50,6 +50,7 @@ def create_house(house_name, password):
                     (house_name, hashed_password))
         house_data = cur.fetchone()
         conn.commit()
+        create_default_priorities(house_data['id'])  # Aquí se llama a la función
     except Exception as e:
         conn.rollback()
         return None, str(e)
@@ -58,3 +59,26 @@ def create_house(house_name, password):
     conn.close()
 
     return House(house_data['id'], house_data['house_name'], house_data['password']), None
+
+def create_default_priorities(house_id):
+    default_priorities = [
+        (1, 'Crítica'),
+        (2, 'Urgente'),
+        (3, 'Importante'),
+        (4, 'Moderado'),
+        (5, 'Menor'),
+        (6, 'Trivial'),
+        (7, 'Otro'),
+    ]
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+    try:
+        for level, name in default_priorities:
+            cur.execute('INSERT INTO priority_levels (level, name, house_id) VALUES (%s, %s, %s)',
+                        (level, name, house_id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(f"Error inserting default priorities: {str(e)}")
+    cur.close()
+    conn.close()

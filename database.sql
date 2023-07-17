@@ -12,3 +12,10 @@ CREATE TABLE tasks (
     priority INTEGER CHECK (priority >= 1 AND priority <= 7) NOT NULL,
     house_id INTEGER REFERENCES houses(id) ON DELETE CASCADE
 );
+
+CREATE TABLE priority_levels (
+    id SERIAL PRIMARY KEY,
+    level INTEGER CHECK (level >= 1 AND level <= 7) NOT NULL,
+    name VARCHAR(25) NOT NULL,
+    house_id INTEGER REFERENCES houses(id) ON DELETE CASCADE
+);

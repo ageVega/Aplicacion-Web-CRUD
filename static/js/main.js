@@ -4,33 +4,35 @@ const taskList = document.querySelector('#taskList');
 
 const houseId = '{{current_user.id}}'; 
 
+const prioritySelect = document.querySelector('select[name="prioridad"]');
+const priorityNameForm = document.querySelector('#priorityNameForm');
+
 let tareas = [];
+let priorityNames = [];
 
 let editing = false;
 let tareaId = null;
 
 
 function priorityText(priority) {
-    switch (parseInt(priority)) {
-        case 1: return "Crítica";
-        case 2: return "Urgente";
-        case 3: return "Importante";
-        case 4: return "Moderado";
-        case 5: return "Menor";
-        case 6: return "Trivial";
-        case 7: return "Otro";
-        default: return "";
-    }
+    const priorityName = priorityNames.find(p => p.level === parseInt(priority)).name;
+    return priorityName || '';
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
     clearHouseIdOnLogout();
-    const response = await fetch(`/api/tasks?house_id=${houseId}`);
-    const data = await response.json();
-    tareas = data;
+    const responseTasks = await fetch(`/api/tasks?house_id=${houseId}`);
+    const dataTasks = await responseTasks.json();
+    tareas = dataTasks;
+
+    const responsePriorities = await fetch(`/api/priority_levels?house_id=${houseId}`);
+    const dataPriorities = await responsePriorities.json();
+    priorityNames = dataPriorities;
+    
+    updatePrioritySelect(priorityNames);  // Llama a la nueva función
+
     renderTask(tareas);
 });
-
 
 taskForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -86,15 +88,15 @@ async function reloadPage() {
 
 function renderTask(tareas) {
     taskList.innerHTML = '';
-
     tareas = sortTasks(tareas, true);
 
     tareas.forEach(tarea => {
         const taskItem = document.createElement('li');
         taskItem.classList = 'list-group-item list-group-item-dark my-2';
+        const priorityName = priorityNames.find(p => p.level === tarea.priority).name;
         taskItem.innerHTML = `
             <header class="d-flex justify-content-between align-items-center">
-                <h3>${tarea.priority}. ${priorityText(tarea.priority)}</h3>
+                <h3>${tarea.priority}. ${priorityName}</h3>
                 <div>
                     <button class="btn-edit btn btn-secondary btn-sm">edit</button>
                     <button class="btn-delete btn btn-danger btn-sm">delete</button>
@@ -151,3 +153,51 @@ function clearHouseIdOnLogout() {
         sessionStorage.removeItem('user_id');
     }
 }
+
+function updatePriorityNames(priorityNames) {
+    const selectPriority = taskForm['prioridad'];
+    selectPriority.innerHTML = '';
+    priorityNames.forEach(priority => {
+        const option = document.createElement('option');
+        option.value = priority.level;
+        option.textContent = priority.name;
+        selectPriority.appendChild(option);
+    });
+}
+
+function updatePrioritySelect(priorityNames) {
+    prioritySelect.innerHTML = '';
+    priorityNames.forEach(priority => {
+        const option = document.createElement('option');
+        option.value = priority.level;
+        option.textContent = `${priority.level}. ${priority.name}`;
+        prioritySelect.appendChild(option);
+    });
+}
+
+priorityNameForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const level = priorityNameForm['priorityLevel'].value;
+    const name = priorityNameForm['priorityName'].value;
+    const house_id = houseId;
+
+    // Tienes que cambiar esta URL por la correspondiente a tu ruta en Flask para actualizar el nombre de la prioridad
+    const response = await fetch(`/api/priority_names/${level}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name,
+            house_id
+        })
+    });
+
+    const updatedPriorityName = await response.json();
+
+    // Aquí debes actualizar la variable priorityNames y luego llamar a la función updatePrioritySelect() y renderTask()
+    priorityNames = priorityNames.map(p => p.level === updatedPriorityName.level ? updatedPriorityName : p);
+    updatePrioritySelect(priorityNames);
+    renderTask(tareas);
+});
