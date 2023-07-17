@@ -113,7 +113,7 @@ def delete_task(id):
 def get_priority_levels():
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-    cur.execute("SELECT * FROM priority_levels WHERE house_id = %s", (current_user.id,))
+    cur.execute("SELECT * FROM priority_levels WHERE house_id = %s ORDER BY level", (current_user.id,))  # Añadir "ORDER BY level"
 
     priority_levels = cur.fetchall()
 

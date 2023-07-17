@@ -202,6 +202,8 @@ function updatePriorityNames(priorityNames) {
 }
 
 function updatePrioritySelect(priorityNames) {
+    priorityNames.sort((a, b) => a.level - b.level);  // Añadir esta línea para ordenar las prioridades por su nivel
+    
     prioritySelect.innerHTML = '';
     priorityNames.forEach(priority => {
         const option = document.createElement('option');
