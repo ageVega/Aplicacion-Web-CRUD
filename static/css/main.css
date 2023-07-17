@@ -41,9 +41,7 @@ footer {
     color: #000000; /* Black text */
     text-align: center;
     text-decoration: none;
-    display: inline-block;
     font-size: 14px; /* Smaller text */
-    margin: 4px 2px;
     padding: 4px 8px; /* Smaller button */
     cursor: pointer;
     border-radius: 6px; /* Less rounded corners */
@@ -52,4 +50,9 @@ footer {
 .btn-edit,
 .form-select {
     height: 38px;
+}
+
+.form-select {
+    margin-right: 8px; /* Adjust this value to increase or decrease the space */
+    border-radius: 6px; /* Establecer el radio del borde, puedes cambiar este valor */
 }
