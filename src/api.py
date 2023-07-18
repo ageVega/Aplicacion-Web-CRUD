@@ -106,7 +106,6 @@ def delete_task(id):
 
     return jsonify(task)
 
-
 # Devuelve todos los niveles de prioridad para una casa
 @api_blueprint.route('/priority_levels', methods=['GET'])
 @login_required
