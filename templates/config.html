@@ -1,0 +1,25 @@
+<!-- templates/config.html -->
+{% extends "base.html" %}
+
+{% block title %}Configuración{% endblock %}
+
+{% block header %}
+    <header class="sticky-header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/">Volver atrás</a>
+                </div>
+                <span class="navbar-text">Bienvenido, {{ house_name }}</span>
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/auth/logout">Logout</a>
+                </div>
+            </div>
+        </nav>        
+    </header>
+{% endblock %}
+
+{% block main %}
+    <h1 class="text-center mb-4">Configuración de la cuenta</h1>
+    <!-- Aquí puedes poner tus opciones de configuración -->
+{% endblock %}
