@@ -1,100 +1,213 @@
 // main.js
-const taskForm = document.querySelector('#taskForm');
-const taskList = document.querySelector('#taskList');
-
 const houseId = '{{current_user.id}}'; 
 
+const taskForm               = document.querySelector('#taskForm');
+const taskList               = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
+const priorityNameForm       = document.querySelector('#priorityNameForm');
+const resetPriorityNamesForm = document.querySelector('#resetPriorityNamesForm');
+const setWeekdayNamesForm    = document.querySelector('#setWeekdayNamesForm');
+
+let prioritySelect = document.querySelector('select[name="prioridad"]');
+
 let tareas = [];
+let priorityNames = [];
 
 let editing = false;
 let tareaId = null;
 
 
 function priorityText(priority) {
-    switch (parseInt(priority)) {
-        case 1: return "Crítica";
-        case 2: return "Urgente";
-        case 3: return "Importante";
-        case 4: return "Moderado";
-        case 5: return "Menor";
-        case 6: return "Trivial";
-        case 7: return "Otro";
-        default: return "";
-    }
+    const priorityName = priorityNames.find(p => p.level === parseInt(priority)).name;
+    return priorityName || '';
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
     clearHouseIdOnLogout();
-    const response = await fetch(`/api/tasks?house_id=${houseId}`);
-    const data = await response.json();
-    tareas = data;
-    renderTask(tareas);
+    if (taskList) {  
+        const responseTasks = await fetch(`/api/tasks?house_id=${houseId}`);
+        const dataTasks = await responseTasks.json();
+        tareas = dataTasks;
+    }
+
+    const responsePriorities = await fetch(`/api/priority_levels?house_id=${houseId}`);
+    const dataPriorities = await responsePriorities.json();
+    priorityNames = dataPriorities;
+    
+    updatePrioritySelect(priorityNames);  
+
+    if (taskList) {  
+        renderTask(tareas);
+    }
 });
 
+if (taskForm) {
+    taskForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-taskForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+        const tarea = taskForm['tarea'].value;
+        const prioridad = taskForm['prioridad'].value;
+        const house_id = houseId;
 
-    const task = taskForm['tarea'].value;
-    const priority = taskForm['prioridad'].value;
-    const house_id = houseId;
+        if (!editing) {
+            const response = await fetch('/api/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    task: tarea,
+                    priority: prioridad,
+                    house_id
+                })
+            });
 
-    if (!editing) {
-        const response = await fetch('/api/tasks', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                task,
-                priority,
-                house_id
-            })
-        });
+            const newTask = await response.json();
+            tareas.push(newTask);
+        } else {
+            const response = await fetch(`/api/tasks/${tareaId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    task: tarea,
+                    priority: prioridad,
+                })
+            });
 
-        const data = await response.json();
-        tareas.push(data);
-    } else {
-        const response = await fetch(`/api/tasks/${tareaId}`, {
+            const updatedTask = await response.json();
+            tareas = tareas.map(tarea => tarea.id === updatedTask.id ? updatedTask : tarea);
+            editing = false;
+        }
+
+        taskForm.reset();
+        renderTask(tareas);
+    });
+}
+
+if (priorityNameForm) { 
+    priorityNameForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const level = priorityNameForm['priorityLevel'].value;
+        const name = priorityNameForm['priorityName'].value;
+        const house_id = houseId;
+
+        const response = await fetch(`/api/priority_names/${level}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                task,
-                priority,
+                name,
                 house_id
             })
         });
 
-        const updatedTask = await response.json();
-        tareas = tareas.map(tarea => tarea.id === updatedTask.id ? updatedTask : tarea);
-        editing = false;
-        tareaId = null;
-    }
+        const updatedPriorityName = await response.json();
 
-    reloadPage();
-    taskForm.reset();
-});
+        priorityNames = priorityNames.map(p => p.level === updatedPriorityName.level ? updatedPriorityName : p);
+
+        // Reasigna prioritySelect antes de llamar a updatePrioritySelect
+        prioritySelect = document.querySelector('select[name="prioridad"]');
+        updatePrioritySelect(priorityNames);
+        reloadPage();
+    
+        // Limpia el formulario
+        clearPriorityNameForm();
+    });
+}
+
+if (resetPriorityNamesForm) {
+    resetPriorityNamesForm.addEventListener('submit', async (event) => {
+        // Previene el comportamiento por defecto del formulario (recarga de la página)
+        event.preventDefault();
+
+        // Lógica para resetear los nombres de prioridad
+        const response = await fetch('/api/reset_priority_names', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const updatedPriorityNames = await response.json();
+
+            // Actualiza las prioridades en el cliente
+            priorityNames = updatedPriorityNames;
+
+            // Reasigna prioritySelect antes de llamar a updatePrioritySelect
+            prioritySelect = document.querySelector('select[name="prioridad"]');
+            updatePrioritySelect(priorityNames);
+
+            // Redirecciona al dashboard
+            window.location.href = '/dashboard';
+        }
+    });
+}
+
+if (setWeekdayNamesForm) {
+    setWeekdayNamesForm.addEventListener('submit', async (event) => {
+        // Previene el comportamiento por defecto del formulario (recarga de la página)
+        event.preventDefault();
+
+        // Lógica para establecer los nombres de prioridad a los días de la semana
+        const response = await fetch('/api/set_weekday_priority_names', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const updatedPriorityNames = await response.json();
+
+            // Actualiza las prioridades en el cliente
+            priorityNames = updatedPriorityNames;
+
+            // Reasigna prioritySelect antes de llamar a updatePrioritySelect
+            prioritySelect = document.querySelector('select[name="prioridad"]');
+            updatePrioritySelect(priorityNames);
+
+            // Redirecciona al dashboard
+            window.location.href = '/dashboard';
+        }
+    });
+}
+
+function clearPriorityNameForm() {
+    // Establece el valor de select y input a vacío
+    priorityNameForm['priorityLevel'].value = '';
+    priorityNameForm['priorityName'].value = '';
+    console.log('Formulario limpiado'); // Añade esta línea
+}
 
 async function reloadPage() {
     const response = await fetch('/api/tasks');
     const data = await response.json();
     tareas = data;
-    renderTask(tareas);
+    
+    if (taskList) {
+        renderTask(tareas);
+    }
 }
 
 function renderTask(tareas) {
-    taskList.innerHTML = '';
+    if (!taskList) {
+        return;
+    }
 
+    taskList.innerHTML = '';
     tareas = sortTasks(tareas, true);
 
     tareas.forEach(tarea => {
         const taskItem = document.createElement('li');
         taskItem.classList = 'list-group-item list-group-item-dark my-2';
+        const priorityName = priorityNames.find(p => p.level === tarea.priority).name;
         taskItem.innerHTML = `
             <header class="d-flex justify-content-between align-items-center">
-                <h3>${tarea.priority}. ${priorityText(tarea.priority)}</h3>
+                <h3>${tarea.priority}. ${priorityName}</h3>
                 <div>
                     <button class="btn-edit btn btn-secondary btn-sm">edit</button>
                     <button class="btn-delete btn btn-danger btn-sm">delete</button>
@@ -150,4 +263,35 @@ function clearHouseIdOnLogout() {
     if (urlPath === '/' || urlPath === '/home') {
         sessionStorage.removeItem('user_id');
     }
+}
+
+function updatePriorityNames(priorityNames) {
+    const selectPriority = taskForm['prioridad'];
+    selectPriority.innerHTML = '';
+    priorityNames.forEach(priority => {
+        const option = document.createElement('option');
+        option.value = priority.level;
+        option.textContent = priority.name;
+        selectPriority.appendChild(option);
+    });
+}
+
+function updatePrioritySelect(priorityNames) {
+    // Mover la asignación de prioritySelect aquí
+    let prioritySelect = document.querySelector('select[name="prioridad"]');
+
+    if (!prioritySelect) {
+        // No intentar actualizar el select si no existe.
+        return;
+    }
+    
+    priorityNames.sort((a, b) => a.level - b.level);  // Añadir esta línea para ordenar las prioridades por su nivel
+    
+    prioritySelect.innerHTML = '';
+    priorityNames.forEach(priority => {
+        const option = document.createElement('option');
+        option.value = priority.level;
+        option.textContent = `${priority.level}. ${priority.name}`;
+        prioritySelect.appendChild(option);
+    });
 }
