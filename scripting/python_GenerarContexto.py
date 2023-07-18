@@ -49,9 +49,9 @@ file_paths = [
     os.path.join(script_dir, os.pardir, 'database.sql'),
     # Python
     os.path.join(script_dir, os.pardir, 'src', 'app.py'),
-    os.path.join(script_dir, os.pardir, 'src', 'connection.py'),
-    os.path.join(script_dir, os.pardir, 'src', 'house.py'),
-    os.path.join(script_dir, os.pardir, 'src', 'login.py'),
+    #os.path.join(script_dir, os.pardir, 'src', 'connection.py'),
+    #os.path.join(script_dir, os.pardir, 'src', 'house.py'),
+    #os.path.join(script_dir, os.pardir, 'src', 'login.py'),
     os.path.join(script_dir, os.pardir, 'src', 'api.py'),
     # HTML, CSS, JS
     os.path.join(script_dir, os.pardir, 'templates', 'base.html'),

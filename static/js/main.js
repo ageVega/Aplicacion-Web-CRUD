@@ -1,10 +1,11 @@
 // main.js
-const taskForm = document.querySelector('#taskForm');
-const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
-const priorityNameForm = document.querySelector('#priorityNameForm');
-const resetPriorityNamesForm = document.querySelector('#resetPriorityNamesForm');
-
 const houseId = '{{current_user.id}}'; 
+
+const taskForm               = document.querySelector('#taskForm');
+const taskList               = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
+const priorityNameForm       = document.querySelector('#priorityNameForm');
+const resetPriorityNamesForm = document.querySelector('#resetPriorityNamesForm');
+const setWeekdayNamesForm    = document.querySelector('#setWeekdayNamesForm');
 
 let prioritySelect = document.querySelector('select[name="prioridad"]');
 
@@ -38,40 +39,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         renderTask(tareas);
     }
 });
-
-
-if (priorityNameForm) { 
-    priorityNameForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const level = priorityNameForm['priorityLevel'].value;
-        const name = priorityNameForm['priorityName'].value;
-        const house_id = houseId;
-
-        const response = await fetch(`/api/priority_names/${level}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name,
-                house_id
-            })
-        });
-
-        const updatedPriorityName = await response.json();
-
-        priorityNames = priorityNames.map(p => p.level === updatedPriorityName.level ? updatedPriorityName : p);
-
-        // Reasigna prioritySelect antes de llamar a updatePrioritySelect
-        prioritySelect = document.querySelector('select[name="prioridad"]');
-        updatePrioritySelect(priorityNames);
-        reloadPage();
-    
-        // Limpia el formulario
-        clearPriorityNameForm();
-    });
-}
 
 if (taskForm) {
     taskForm.addEventListener('submit', async (e) => {
@@ -118,6 +85,39 @@ if (taskForm) {
     });
 }
 
+if (priorityNameForm) { 
+    priorityNameForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const level = priorityNameForm['priorityLevel'].value;
+        const name = priorityNameForm['priorityName'].value;
+        const house_id = houseId;
+
+        const response = await fetch(`/api/priority_names/${level}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                house_id
+            })
+        });
+
+        const updatedPriorityName = await response.json();
+
+        priorityNames = priorityNames.map(p => p.level === updatedPriorityName.level ? updatedPriorityName : p);
+
+        // Reasigna prioritySelect antes de llamar a updatePrioritySelect
+        prioritySelect = document.querySelector('select[name="prioridad"]');
+        updatePrioritySelect(priorityNames);
+        reloadPage();
+    
+        // Limpia el formulario
+        clearPriorityNameForm();
+    });
+}
+
 if (resetPriorityNamesForm) {
     resetPriorityNamesForm.addEventListener('submit', async (event) => {
         // Previene el comportamiento por defecto del formulario (recarga de la página)
@@ -131,14 +131,48 @@ if (resetPriorityNamesForm) {
             },
         });
 
-        const updatedPriorityNames = await response.json();
+        if (response.ok) {
+            const updatedPriorityNames = await response.json();
 
-        // Actualiza las prioridades en el cliente
-        priorityNames = updatedPriorityNames;
+            // Actualiza las prioridades en el cliente
+            priorityNames = updatedPriorityNames;
 
-        // Reasigna prioritySelect antes de llamar a updatePrioritySelect
-        prioritySelect = document.querySelector('select[name="prioridad"]');
-        updatePrioritySelect(priorityNames);
+            // Reasigna prioritySelect antes de llamar a updatePrioritySelect
+            prioritySelect = document.querySelector('select[name="prioridad"]');
+            updatePrioritySelect(priorityNames);
+
+            // Redirecciona al dashboard
+            window.location.href = '/dashboard';
+        }
+    });
+}
+
+if (setWeekdayNamesForm) {
+    setWeekdayNamesForm.addEventListener('submit', async (event) => {
+        // Previene el comportamiento por defecto del formulario (recarga de la página)
+        event.preventDefault();
+
+        // Lógica para establecer los nombres de prioridad a los días de la semana
+        const response = await fetch('/api/set_weekday_priority_names', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const updatedPriorityNames = await response.json();
+
+            // Actualiza las prioridades en el cliente
+            priorityNames = updatedPriorityNames;
+
+            // Reasigna prioritySelect antes de llamar a updatePrioritySelect
+            prioritySelect = document.querySelector('select[name="prioridad"]');
+            updatePrioritySelect(priorityNames);
+
+            // Redirecciona al dashboard
+            window.location.href = '/dashboard';
+        }
     });
 }
 
