@@ -1,4 +1,4 @@
-<!-- templates/config.html -->
+<!-- config.html -->
 {% extends "base.html" %}
 
 {% block title %}Configuración{% endblock %}
@@ -22,4 +22,5 @@
 {% block main %}
     <h1 class="text-center mb-4">Configuración de la cuenta</h1>
     <!-- Aquí puedes poner tus opciones de configuración -->
+    <button id="delete-house-btn" data-house-id="{{current_user.id}}" class="btn btn-danger mt-4">Eliminar casa</button>
 {% endblock %}

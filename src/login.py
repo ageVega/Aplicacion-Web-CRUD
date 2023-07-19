@@ -1,5 +1,7 @@
 # login.py
+from .connection import get_connection
 from .house import House, get_house_by_id, get_house_by_house_name, create_house
+from psycopg2 import extras
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
@@ -64,3 +66,24 @@ def logout():
     session.pop('house_name', None)
     logout_user()
     return redirect(url_for('home'))
+
+@login_blueprint.route('/cancel/<int:house_id>', methods=['DELETE'])
+@login_required
+def delete_house(house_id):
+    if house_id != current_user.id:
+        return jsonify({'message': 'No puedes eliminar otra casa'}), 400
+
+    conn = get_connection()
+    cursor = conn.cursor(cursor_factory=extras.RealDictCursor)
+    try:
+        cursor.execute("DELETE FROM houses WHERE id = %s", (house_id,))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'message': 'Error al eliminar la casa'}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+    logout_user()
+    return jsonify({'message': 'Casa eliminada correctamente'}), 200

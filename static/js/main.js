@@ -1,5 +1,6 @@
 // main.js
 const houseId = '{{current_user.id}}'; 
+const deleteHouseButton = document.getElementById('delete-house-btn');
 
 const taskForm               = document.querySelector('#taskForm');
 const taskList               = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
@@ -15,11 +16,6 @@ let priorityNames = [];
 let editing = false;
 let tareaId = null;
 
-
-function priorityText(priority) {
-    const priorityName = priorityNames.find(p => p.level === parseInt(priority)).name;
-    return priorityName || '';
-}
 
 window.addEventListener('DOMContentLoaded', async () => {
     clearHouseIdOnLogout();
@@ -82,6 +78,24 @@ if (taskForm) {
 
         taskForm.reset();
         renderTask(tareas);
+    });
+}
+
+if (deleteHouseButton) {
+    deleteHouseButton.addEventListener('click', async function() {
+        const houseId = this.getAttribute('data-house-id');
+        if (confirm('¿Estás seguro de que quieres eliminar esta casa? Esta acción no se puede deshacer.')) {
+            const response = await fetch(`/auth/cancel/${houseId}`, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message);
+                window.location.href = '/home';
+            } else {
+                alert('Error: ' + data.message);
+            }
+        }
     });
 }
 
@@ -263,6 +277,11 @@ function clearHouseIdOnLogout() {
     if (urlPath === '/' || urlPath === '/home') {
         sessionStorage.removeItem('user_id');
     }
+}
+
+function priorityText(priority) {
+    const priorityName = priorityNames.find(p => p.level === parseInt(priority)).name;
+    return priorityName || '';
 }
 
 function updatePriorityNames(priorityNames) {
