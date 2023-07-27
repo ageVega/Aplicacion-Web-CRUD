@@ -52,19 +52,19 @@ async function initializeApp() {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-    await initializeApp();
+    initializeApp();
     
     SimpleFunctions.clearHouseIdOnLogout();
     
     const taskForm = document.querySelector('#taskForm') ? document.querySelector('#taskForm') : null;
     if (taskForm) {
-        SimpleFunctions.updatePriorityNames();
+        await SimpleFunctions.updatePriorityNames();
         SimpleFunctions.updatePrioritySelect();
     }
     
     const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
     if (taskList) {
-        SimpleFunctions.updateTareas();
+        await SimpleFunctions.updateTareas();
         EventForms.renderTask(getTareas(), getPriorityNames());
     }
 });

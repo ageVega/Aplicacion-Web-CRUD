@@ -173,7 +173,7 @@ def reset_priority_names():
         cur.close()
         conn.close()
 
-    return get_priority_levels()
+    return get_priority_names()
 
 @api_blueprint.route('/set_weekday_priority_names', methods=['POST'])
 @login_required
@@ -203,4 +203,4 @@ def set_weekday_priority_names():
         cur.close()
         conn.close()
 
-    return get_priority_levels()
+    return get_priority_names()

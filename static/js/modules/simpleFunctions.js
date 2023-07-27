@@ -51,7 +51,7 @@ export function updatePrioritySelect() {
 
     if (!prioritySelect) { return; }  // No intentar actualizar el select si no existe
 
-    priorityNames = Main.getPriorityNames();
+    let priorityNames = Main.getPriorityNames();  // Obtenemos priorityNames desde el módulo principal
     
     priorityNames.sort((a, b) => a.level - b.level);  // Ordenar las prioridades por su nivel
     

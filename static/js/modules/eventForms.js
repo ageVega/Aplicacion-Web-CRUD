@@ -48,8 +48,8 @@ export function resetPriorityNamesButton() {
 
         if (response.ok) {
             const updatedPriorityNames = await response.json();
-            priorityNames = updatedPriorityNames;
-            updatePrioritySelect(priorityNames);
+            Main.setPriorityNames(updatedPriorityNames);
+            SimpleFunctions.updatePrioritySelect();
         }
     });
 }
@@ -70,8 +70,8 @@ export function setWeekdayNamesButton() {
 
         if (response.ok) {
             const updatedPriorityNames = await response.json();
-            priorityNames = updatedPriorityNames;
-            updatePrioritySelect(priorityNames);
+            Main.setPriorityNames(updatedPriorityNames);
+            SimpleFunctions.updatePrioritySelect();
         }
     });
 }
