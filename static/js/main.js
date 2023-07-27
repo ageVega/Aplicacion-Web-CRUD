@@ -1,6 +1,6 @@
 // main.js
 import * as SimpleFunctions from './modules/simpleFunctions.js';
-import * as EventForms from './modules/eventForms.js';
+import * as EventForms      from './modules/eventForms.js';
 
 export const houseId = sessionStorage.getItem('house_id');
 
