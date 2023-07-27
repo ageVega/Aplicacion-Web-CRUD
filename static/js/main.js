@@ -1,44 +1,70 @@
 // main.js
-import * as TaskManager     from './modules/taskManager.js';
-import * as PriorityManager from './modules/priorityManager.js';
-import * as UserManager     from './modules/userManager.js';
-
-import { editing, tareaId } from './modules/taskManager.js'; 
+import * as SimpleFunctions from './modules/simpleFunctions.js';
+import * as EventForms from './modules/eventForms.js';
 
 export const houseId = sessionStorage.getItem('house_id');
 
-export let tareas = [];
-export let priorityNames = [];
+let tareas = [];
+let priorityNames = [];
+let editing = false;
+let tareaId = null;
+
+export function getTareas() {
+  return tareas;
+}
+
+export function setTareas(value) {
+  tareas = value;
+}
+
+export function getPriorityNames() {
+  return priorityNames;
+}
+
+export function setPriorityNames(value) {
+  priorityNames = value;
+}
+
+export function getEditing() {
+  return editing;
+}
+
+export function setEditing(value) {
+  editing = value;
+}
+
+export function getTareaId() {
+  return tareaId;
+}
+
+export function setTareaId(value) {
+  tareaId = value;
+}
 
 async function initializeApp() {
-    UserManager.deleteHouseButtonEvent();
+    EventForms.deleteHouseButtonEvent();
 
-    TaskManager.taskFormEvent(tareas, priorityNames, editing, tareaId, houseId);
-    TaskManager.sortTasks(tareas);
+    EventForms.taskFormSubmit(houseId);
 
-    PriorityManager.priorityFormEvent(priorityNames, houseId);
-    PriorityManager.resetPriorityEvent();
-    PriorityManager.setWeekdayNamesEvent();
-    PriorityManager.clearPriorityNameForm();
+    EventForms.priorityNameFormUpdate(priorityNames, houseId);
+    EventForms.resetPriorityNamesButton();
+    EventForms.setWeekdayNamesButton();
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
     await initializeApp();
-
-    UserManager.clearHouseIdOnLogout();
-
-    const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
-    if (taskList) {  
-        const responseTasks = await fetch(`/api/tasks?house_id=${houseId}`);
-        const dataTasks = await responseTasks.json();
-        tareas = dataTasks;
     
-        const responsePriorities = await fetch(`/api/priority_levels?house_id=${houseId}`);
-        responsePriorities.json().then(dataPriorities => {
-            priorityNames = dataPriorities;    
-            PriorityManager.updatePrioritySelect(priorityNames);
-            TaskManager.renderTask(tareas, priorityNames);
-        });
+    SimpleFunctions.clearHouseIdOnLogout();
+    
+    const taskForm = document.querySelector('#taskForm') ? document.querySelector('#taskForm') : null;
+    if (taskForm) {
+        SimpleFunctions.updatePriorityNames();
+        SimpleFunctions.updatePrioritySelect();
     }
     
+    const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
+    if (taskList) {
+        SimpleFunctions.updateTareas();
+        EventForms.renderTask(getTareas(), getPriorityNames());
+    }
 });
