@@ -1,6 +1,8 @@
 // main.js
 import * as SimpleFunctions from './modules/simpleFunctions.js';
-import * as EventForms      from './modules/eventForms.js';
+import * as Dashboard       from './modules/dashboard.js';
+import * as PriorityNames   from './modules/priority_names.js';
+import * as Config          from './modules/config.js';
 
 export const houseId = sessionStorage.getItem('house_id');
 
@@ -41,30 +43,30 @@ export function setTareaId(value) {
   tareaId = value;
 }
 
-async function initializeApp() {
-    EventForms.deleteHouseButtonEvent();
+async function initializeEventListeners() {
+  Config.deleteHouseButtonEvent();
 
-    EventForms.taskFormSubmit(houseId);
+  Dashboard.taskFormSubmit(houseId);
 
-    EventForms.priorityNameFormUpdate(priorityNames, houseId);
-    EventForms.resetPriorityNamesButton();
-    EventForms.setWeekdayNamesButton();
+  PriorityNames.priorityNameFormUpdate(priorityNames, houseId);
+  PriorityNames.resetPriorityNamesButton();
+  PriorityNames.setWeekdayNamesButton();
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-    initializeApp();
+  initializeEventListeners();
     
-    SimpleFunctions.clearHouseIdOnLogout();
-    
-    const taskForm = document.querySelector('#taskForm') ? document.querySelector('#taskForm') : null;
-    if (taskForm) {
-        await SimpleFunctions.updatePriorityNames();
-        SimpleFunctions.updatePrioritySelect();
-    }
-    
-    const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
-    if (taskList) {
-        await SimpleFunctions.updateTareas();
-        EventForms.renderTask(getTareas(), getPriorityNames());
-    }
+  SimpleFunctions.clearHouseIdOnLogout();
+  
+  const taskForm = document.querySelector('#taskForm') ? document.querySelector('#taskForm') : null;
+  if (taskForm) {
+    await SimpleFunctions.updatePriorityNames();
+    SimpleFunctions.updatePrioritySelect();
+  }
+  
+  const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
+  if (taskList) {
+    await SimpleFunctions.updateTareas();
+    Dashboard.renderTask(getTareas(), getPriorityNames());
+  }
 });
