@@ -1,6 +1,7 @@
 # app.py
 from .login import login_blueprint, login_manager
 from .api import api_blueprint
+from .priorities import priorities_blueprint
 from os import environ
 from dotenv import load_dotenv
 from flask import Flask, session, render_template, redirect, url_for
@@ -13,6 +14,7 @@ app.secret_key = environ.get('SECRET_KEY')  # Se utiliza para cifrar las cookies
 
 app.register_blueprint(login_blueprint, url_prefix='/auth')
 app.register_blueprint(api_blueprint, url_prefix='/api')
+app.register_blueprint(priorities_blueprint, url_prefix='/priorities')
 
 login_manager.init_app(app)
 login_manager.login_view = "auth.login"  # Establece la vista de inicio de sesión

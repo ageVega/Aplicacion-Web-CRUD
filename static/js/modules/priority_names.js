@@ -14,7 +14,7 @@ export function priorityNameFormUpdate(priorityNames, houseId) {
         const name = priorityNameForm['priorityName'].value;
         const house_id = houseId;
 
-        const response = await fetch(`/api/priority_names/${level}`, {
+        const response = await fetch(`/priorities/priority_names/${level}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -56,13 +56,13 @@ function FormSubmitHandler(formId, apiEndpoint) {
 }
 
 export function resetPriorityNamesButton() {
-    FormSubmitHandler('#resetPriorityNamesForm', '/api/reset_priority_names');
+    FormSubmitHandler('#resetPriorityNamesForm', '/priorities/reset_priority_names');
 }
 
 export function setEmptyNamesButton() {
-    FormSubmitHandler('#setEmptyNamesForm', '/api/set_empty_priority_names');
+    FormSubmitHandler('#setEmptyNamesForm', '/priorities/set_empty_priority_names');
 }
 
 export function setWeekdayNamesButton() {
-    FormSubmitHandler('#setWeekdayNamesForm', '/api/set_weekday_priority_names');
+    FormSubmitHandler('#setWeekdayNamesForm', '/priorities/set_weekday_priority_names');
 }

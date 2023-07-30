@@ -64,7 +64,7 @@ export function taskFormSubmit(houseId) {
 
 // Actualiza la variable de los nombres de prioridad en main.js desde la BBDD
 export async function updatePriorityNames() {
-    const responsePriorities = await fetch(`/api/priority_names`);
+    const responsePriorities = await fetch(`/priorities/priority_names`);
     const dataPriorities = await responsePriorities.json();
     Main.setPriorityNames(dataPriorities);
 }
