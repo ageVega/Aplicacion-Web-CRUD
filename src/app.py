@@ -1,6 +1,6 @@
 # app.py
 from .login import login_blueprint, login_manager
-from .api import api_blueprint
+from .api import tasks_blueprint
 from .priorities import priorities_blueprint
 from os import environ
 from dotenv import load_dotenv
@@ -13,7 +13,7 @@ app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.secret_key = environ.get('SECRET_KEY')  # Se utiliza para cifrar las cookies de sesión del usuario, Flask-Login utiliza estas cookies para recordar a los usuarios entre solicitudes.
 
 app.register_blueprint(login_blueprint, url_prefix='/auth')
-app.register_blueprint(api_blueprint, url_prefix='/api')
+app.register_blueprint(tasks_blueprint, url_prefix='/api')
 app.register_blueprint(priorities_blueprint, url_prefix='/priorities')
 
 login_manager.init_app(app)

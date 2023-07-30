@@ -5,13 +5,12 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 
 # Define un Blueprint para la API. Un Blueprint es un conjunto de rutas que pueden ser registradas en una aplicación Flask.
-api_blueprint = Blueprint('api', __name__)
+tasks_blueprint = Blueprint('api', __name__)
 
 # Devuelve todas las tareas
-@api_blueprint.route('/tasks', methods=['GET'])
+@tasks_blueprint.route('/tasks', methods=['GET'])
 @login_required
 def get_tasks():
-    house_id = request.args.get('house_id')
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
     cur.execute("SELECT * FROM tasks WHERE house_id = %s", (current_user.id,))
@@ -24,7 +23,7 @@ def get_tasks():
     return jsonify(tasks)
 
 # Crea una nueva tarea
-@api_blueprint.route('/tasks', methods=['POST'])
+@tasks_blueprint.route('/tasks', methods=['POST'])
 @login_required
 def create_task():
     new_task = request.get_json()
@@ -44,7 +43,7 @@ def create_task():
     return jsonify(new_created_task)
 
 # Devuelve una tarea existente
-@api_blueprint.route('/tasks/<int:id>', methods=['GET'])
+@tasks_blueprint.route('/tasks/<int:id>', methods=['GET'])
 @login_required
 def get_task(id):
     conn = get_connection()
@@ -62,7 +61,7 @@ def get_task(id):
     return jsonify(task)
 
 # Modifica una tarea existente
-@api_blueprint.route('/tasks/<int:id>', methods=['PUT'])
+@tasks_blueprint.route('/tasks/<int:id>', methods=['PUT'])
 @login_required
 def update_task(id):
     new_task = request.get_json()
@@ -87,7 +86,7 @@ def update_task(id):
     return jsonify(updated_task)
 
 # Borra una tarea existente
-@api_blueprint.route('/tasks/<int:id>', methods=['DELETE'])
+@tasks_blueprint.route('/tasks/<int:id>', methods=['DELETE'])
 @login_required
 def delete_task(id):
     conn = get_connection()
