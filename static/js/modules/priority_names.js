@@ -49,7 +49,8 @@ export function resetPriorityNamesButton() {
         if (response.ok) {
             const updatedPriorityNames = await response.json();
             Main.setPriorityNames(updatedPriorityNames);
-            SimpleFunctions.updatePrioritySelect();
+
+            window.location.href = '/dashboard';
         }
     });
 }
@@ -71,7 +72,8 @@ export function setEmptyNamesButton() {
         if (response.ok) {
             const updatedPriorityNames = await response.json();
             Main.setPriorityNames(updatedPriorityNames);
-            SimpleFunctions.updatePrioritySelect();
+
+            window.location.href = '/dashboard';
         }
     });
 }
@@ -93,7 +95,8 @@ export function setWeekdayNamesButton() {
         if (response.ok) {
             const updatedPriorityNames = await response.json();
             Main.setPriorityNames(updatedPriorityNames);
-            SimpleFunctions.updatePrioritySelect();
+
+            window.location.href = '/dashboard';
         }
     });
 }
