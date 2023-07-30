@@ -51,6 +51,7 @@ async function initializeEventListeners() {
 
     PriorityNames.priorityNameFormUpdate(priorityNames, houseId);
     PriorityNames.resetPriorityNamesButton();
+    PriorityNames.setEmptyNamesButton();
     PriorityNames.setWeekdayNamesButton();
 }
 

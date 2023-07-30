@@ -175,6 +175,36 @@ def reset_priority_names():
 
     return get_priority_names()
 
+@api_blueprint.route('/set_empty_priority_names', methods=['POST'])
+@login_required
+def set_empty_priority_names():
+    weekday_priorities = [
+        (1, ' '),
+        (2, ' '),
+        (3, ' '),
+        (4, ' '),
+        (5, ' '),
+        (6, ' '),
+        (7, ' '),
+    ]
+
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
+
+    try:
+        for level, name in weekday_priorities:
+            cur.execute('UPDATE priority_levels SET name = %s WHERE level = %s AND house_id = %s',
+                        (name, level, current_user.id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(f"Error setting empty priority names: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+
+    return get_priority_names()
+
 @api_blueprint.route('/set_weekday_priority_names', methods=['POST'])
 @login_required
 def set_weekday_priority_names():

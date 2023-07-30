@@ -54,6 +54,28 @@ export function resetPriorityNamesButton() {
     });
 }
 
+export function setEmptyNamesButton() {
+    const setEmptyNamesForm = document.querySelector('#setEmptyNamesForm');
+    if (!setEmptyNamesForm) return;
+
+    setEmptyNamesForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const response = await fetch('/api/set_empty_priority_names', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const updatedPriorityNames = await response.json();
+            Main.setPriorityNames(updatedPriorityNames);
+            SimpleFunctions.updatePrioritySelect();
+        }
+    });
+}
+
 export function setWeekdayNamesButton() {
     const setWeekdayNamesForm = document.querySelector('#setWeekdayNamesForm');
     if (!setWeekdayNamesForm) return;
