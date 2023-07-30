@@ -14,7 +14,7 @@ export function priorityNameFormUpdate(priorityNames, houseId) {
         const name = priorityNameForm['priorityName'].value;
         const house_id = houseId;
 
-        const response = await fetch(`/api/priority_names/${level}`, {
+        const response = await fetch(`/priorities/priority_names/${level}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -32,14 +32,14 @@ export function priorityNameFormUpdate(priorityNames, houseId) {
     });
 }
 
-export function resetPriorityNamesButton() {
-    const resetPriorityNamesForm = document.querySelector('#resetPriorityNamesForm');
-    if (!resetPriorityNamesForm) return;
+function FormSubmitHandler(formId, apiEndpoint) {
+    const form = document.querySelector(formId);
+    if (!form) return;
     
-    resetPriorityNamesForm.addEventListener('submit', async (event) => {
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const response = await fetch('/api/reset_priority_names', {
+        const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,29 +49,20 @@ export function resetPriorityNamesButton() {
         if (response.ok) {
             const updatedPriorityNames = await response.json();
             Main.setPriorityNames(updatedPriorityNames);
-            SimpleFunctions.updatePrioritySelect();
+
+            window.location.href = '/dashboard';
         }
     });
 }
 
+export function resetPriorityNamesButton() {
+    FormSubmitHandler('#resetPriorityNamesForm', '/priorities/reset_priority_names');
+}
+
+export function setEmptyNamesButton() {
+    FormSubmitHandler('#setEmptyNamesForm', '/priorities/set_empty_priority_names');
+}
+
 export function setWeekdayNamesButton() {
-    const setWeekdayNamesForm = document.querySelector('#setWeekdayNamesForm');
-    if (!setWeekdayNamesForm) return;
-
-    setWeekdayNamesForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const response = await fetch('/api/set_weekday_priority_names', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (response.ok) {
-            const updatedPriorityNames = await response.json();
-            Main.setPriorityNames(updatedPriorityNames);
-            SimpleFunctions.updatePrioritySelect();
-        }
-    });
+    FormSubmitHandler('#setWeekdayNamesForm', '/priorities/set_weekday_priority_names');
 }

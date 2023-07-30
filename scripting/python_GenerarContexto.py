@@ -53,6 +53,7 @@ file_paths = [
     #os.path.join(script_dir, os.pardir, 'src', 'house.py'),
     #os.path.join(script_dir, os.pardir, 'src', 'login.py'),
     os.path.join(script_dir, os.pardir, 'src', 'api.py'),
+    os.path.join(script_dir, os.pardir, 'src', 'priorities.py'),
     # HTML, CSS, JS
     #os.path.join(script_dir, os.pardir, 'templates', 'base.html'),
     #os.path.join(script_dir, os.pardir, 'templates', 'home.html'),

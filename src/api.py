@@ -5,13 +5,12 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 
 # Define un Blueprint para la API. Un Blueprint es un conjunto de rutas que pueden ser registradas en una aplicación Flask.
-api_blueprint = Blueprint('api', __name__)
+tasks_blueprint = Blueprint('api', __name__)
 
 # Devuelve todas las tareas
-@api_blueprint.route('/tasks', methods=['GET'])
+@tasks_blueprint.route('/tasks', methods=['GET'])
 @login_required
 def get_tasks():
-    house_id = request.args.get('house_id')
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
     cur.execute("SELECT * FROM tasks WHERE house_id = %s", (current_user.id,))
@@ -24,7 +23,7 @@ def get_tasks():
     return jsonify(tasks)
 
 # Crea una nueva tarea
-@api_blueprint.route('/tasks', methods=['POST'])
+@tasks_blueprint.route('/tasks', methods=['POST'])
 @login_required
 def create_task():
     new_task = request.get_json()
@@ -44,7 +43,7 @@ def create_task():
     return jsonify(new_created_task)
 
 # Devuelve una tarea existente
-@api_blueprint.route('/tasks/<int:id>', methods=['GET'])
+@tasks_blueprint.route('/tasks/<int:id>', methods=['GET'])
 @login_required
 def get_task(id):
     conn = get_connection()
@@ -62,7 +61,7 @@ def get_task(id):
     return jsonify(task)
 
 # Modifica una tarea existente
-@api_blueprint.route('/tasks/<int:id>', methods=['PUT'])
+@tasks_blueprint.route('/tasks/<int:id>', methods=['PUT'])
 @login_required
 def update_task(id):
     new_task = request.get_json()
@@ -87,7 +86,7 @@ def update_task(id):
     return jsonify(updated_task)
 
 # Borra una tarea existente
-@api_blueprint.route('/tasks/<int:id>', methods=['DELETE'])
+@tasks_blueprint.route('/tasks/<int:id>', methods=['DELETE'])
 @login_required
 def delete_task(id):
     conn = get_connection()
@@ -105,102 +104,3 @@ def delete_task(id):
         return jsonify({'message': 'Task not found'}), 404
 
     return jsonify(task)
-
-# Devuelve todos los niveles de prioridad para una casa
-@api_blueprint.route('/priority_names', methods=['GET'])
-@login_required
-def get_priority_names():
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    cur.execute("SELECT * FROM priority_levels WHERE house_id = %s ORDER BY level", (current_user.id,))
-    priority_names = cur.fetchall()
-
-    cur.close()
-    conn.close()
-
-    return jsonify(priority_names)
-
-# Modifica el nombre de una prioridad para una casa
-@api_blueprint.route('/priority_names/<int:level>', methods=['PUT'])
-@login_required
-def update_priority_name(level):
-    new_priority_name = request.get_json()
-    name = new_priority_name['name']
-
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    cur.execute('UPDATE priority_levels SET name = %s WHERE level = %s AND house_id = %s RETURNING *',
-                (name, level, current_user.id))
-    updated_priority_name = cur.fetchone()
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    if updated_priority_name is None:
-        return jsonify({'message': 'Priority name not found'}), 404
-
-    return jsonify(updated_priority_name)
-
-@api_blueprint.route('/reset_priority_names', methods=['POST'])
-@login_required
-def reset_priority_names():
-    default_priorities = [
-        (1, 'Crítica'),
-        (2, 'Urgente'),
-        (3, 'Importante'),
-        (4, 'Moderado'),
-        (5, 'Menor'),
-        (6, 'Trivial'),
-        (7, 'Otro'),
-    ]
-
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    try:
-        for level, name in default_priorities:
-            cur.execute('UPDATE priority_levels SET name = %s WHERE level = %s AND house_id = %s',
-                        (name, level, current_user.id))
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        print(f"Error resetting priority names: {str(e)}")
-    finally:
-        cur.close()
-        conn.close()
-
-    return get_priority_names()
-
-@api_blueprint.route('/set_weekday_priority_names', methods=['POST'])
-@login_required
-def set_weekday_priority_names():
-    weekday_priorities = [
-        (1, 'Lunes'),
-        (2, 'Martes'),
-        (3, 'Miércoles'),
-        (4, 'Jueves'),
-        (5, 'Viernes'),
-        (6, 'Sábado'),
-        (7, 'Domingo'),
-    ]
-
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    try:
-        for level, name in weekday_priorities:
-            cur.execute('UPDATE priority_levels SET name = %s WHERE level = %s AND house_id = %s',
-                        (name, level, current_user.id))
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        print(f"Error setting weekday priority names: {str(e)}")
-    finally:
-        cur.close()
-        conn.close()
-
-    return get_priority_names()
