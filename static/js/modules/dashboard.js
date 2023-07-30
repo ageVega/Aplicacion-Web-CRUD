@@ -61,6 +61,36 @@ export function taskFormSubmit(houseId) {
     });
 }
 
+export async function updatePriorityNames() {
+    const responsePriorities = await fetch(`/api/priority_names`);
+    const dataPriorities = await responsePriorities.json();
+    Main.setPriorityNames(dataPriorities);
+}
+
+export function updatePrioritySelect() {
+    let prioritySelect = document.querySelector('select[name="prioridad"]');
+
+    if (!prioritySelect) { return; }  // No intentar actualizar el select si no existe
+
+    let priorityNames = Main.getPriorityNames();  // Obtenemos priorityNames desde el módulo principal
+    
+    priorityNames.sort((a, b) => a.level - b.level);  // Ordenar las prioridades por su nivel
+    
+    prioritySelect.innerHTML = '';
+    priorityNames.forEach(priority => {
+        const option = document.createElement('option');
+        option.value = priority.level;
+        option.textContent = `${priority.level}. ${priority.name}`;
+        prioritySelect.appendChild(option);
+    });
+}
+
+export async function updateTareas() {
+    const responseTasks = await fetch(`/api/tasks`);
+    const dataTasks = await responseTasks.json();
+    Main.setTareas(dataTasks);
+}
+
 export function renderTasks(tareas, priorityNames) {
     if (!taskList) return;
 

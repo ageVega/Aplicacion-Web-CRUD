@@ -61,14 +61,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Pinta los nombres de prioridad en el selector de dashboard.html
     const taskForm = document.querySelector('#taskForm') ? document.querySelector('#taskForm') : null;
     if (taskForm) {
-        await SimpleFunctions.updatePriorityNames();
-        SimpleFunctions.updatePrioritySelect();
+        await Dashboard.updatePriorityNames();
+        Dashboard.updatePrioritySelect();
     }
     
     // Pinta las tareas existentes en dashboard.html
     const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
     if (taskList) {
-        await SimpleFunctions.updateTareas();
+        await Dashboard.updateTareas();
         Dashboard.renderTasks(getTareas(), getPriorityNames());
     }
 });
