@@ -12,61 +12,61 @@ let editing = false;
 let tareaId = null;
 
 export function getTareas() {
-  return tareas;
+    return tareas;
 }
 
 export function setTareas(value) {
-  tareas = value;
+    tareas = value;
 }
 
 export function getPriorityNames() {
-  return priorityNames;
+    return priorityNames;
 }
 
 export function setPriorityNames(value) {
-  priorityNames = value;
+    priorityNames = value;
 }
 
 export function getEditing() {
-  return editing;
+    return editing;
 }
 
 export function setEditing(value) {
-  editing = value;
+    editing = value;
 }
 
 export function getTareaId() {
-  return tareaId;
+    return tareaId;
 }
 
 export function setTareaId(value) {
-  tareaId = value;
+    tareaId = value;
 }
 
 async function initializeEventListeners() {
-  Config.deleteHouseButtonEvent();
+    Config.deleteHouseButtonEvent();
 
-  Dashboard.taskFormSubmit(houseId);
+    Dashboard.taskFormSubmit(houseId);
 
-  PriorityNames.priorityNameFormUpdate(priorityNames, houseId);
-  PriorityNames.resetPriorityNamesButton();
-  PriorityNames.setWeekdayNamesButton();
+    PriorityNames.priorityNameFormUpdate(priorityNames, houseId);
+    PriorityNames.resetPriorityNamesButton();
+    PriorityNames.setWeekdayNamesButton();
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-  initializeEventListeners();
+    initializeEventListeners();
     
-  SimpleFunctions.clearHouseIdOnLogout();
-  
-  const taskForm = document.querySelector('#taskForm') ? document.querySelector('#taskForm') : null;
-  if (taskForm) {
-    await SimpleFunctions.updatePriorityNames();
-    SimpleFunctions.updatePrioritySelect();
-  }
-  
-  const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
-  if (taskList) {
-    await SimpleFunctions.updateTareas();
-    Dashboard.renderTask(getTareas(), getPriorityNames());
-  }
+    SimpleFunctions.clearHouseIdOnLogout();
+    
+    const taskForm = document.querySelector('#taskForm') ? document.querySelector('#taskForm') : null;
+    if (taskForm) {
+        await SimpleFunctions.updatePriorityNames();
+        SimpleFunctions.updatePrioritySelect();
+    }
+    
+    const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
+    if (taskList) {
+        await SimpleFunctions.updateTareas();
+        Dashboard.renderTask(getTareas(), getPriorityNames());
+    }
 });
