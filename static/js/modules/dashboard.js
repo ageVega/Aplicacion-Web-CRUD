@@ -57,11 +57,11 @@ export function taskFormSubmit(houseId) {
         }
 
         taskForm.reset();
-        renderTask(Main.getTareas(), Main.getPriorityNames());
+        renderTasks(Main.getTareas(), Main.getPriorityNames());
     });
 }
 
-export function renderTask(tareas, priorityNames) {
+export function renderTasks(tareas, priorityNames) {
     if (!taskList) return;
 
     taskList.innerHTML = '';
@@ -93,7 +93,7 @@ export function renderTask(tareas, priorityNames) {
 
             tareas = tareas.filter(tarea => tarea.id !== data.id);
 
-            renderTask(tareas, priorityNames);
+            renderTasks(tareas, priorityNames);
         });
 
         const btnEdit = taskItem.querySelector('.btn-edit');

@@ -54,19 +54,21 @@ async function initializeEventListeners() {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-    initializeEventListeners();
+    initializeEventListeners(); // Inicializa los formularios de la aplicacion
     
     SimpleFunctions.clearHouseIdOnLogout();
     
+    // Pinta los nombres de prioridad en el selector de dashboard.html
     const taskForm = document.querySelector('#taskForm') ? document.querySelector('#taskForm') : null;
     if (taskForm) {
         await SimpleFunctions.updatePriorityNames();
         SimpleFunctions.updatePrioritySelect();
     }
     
+    // Pinta las tareas existentes en dashboard.html
     const taskList = document.querySelector('#taskList') ? document.querySelector('#taskList') : null;
     if (taskList) {
         await SimpleFunctions.updateTareas();
-        Dashboard.renderTask(getTareas(), getPriorityNames());
+        Dashboard.renderTasks(getTareas(), getPriorityNames());
     }
 });
