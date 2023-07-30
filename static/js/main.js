@@ -43,6 +43,7 @@ export function setTareaId(value) {
     tareaId = value;
 }
 
+// Inicializa los formularios de la aplicacion
 async function initializeEventListeners() {
     Config.deleteHouseButtonEvent();
 
@@ -54,7 +55,7 @@ async function initializeEventListeners() {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-    initializeEventListeners(); // Inicializa los formularios de la aplicacion
+    initializeEventListeners();
     
     SimpleFunctions.clearHouseIdOnLogout();
     

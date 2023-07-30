@@ -61,20 +61,21 @@ export function taskFormSubmit(houseId) {
     });
 }
 
+
+// Actualiza la variable de los nombres de prioridad en main.js desde la BBDD
 export async function updatePriorityNames() {
     const responsePriorities = await fetch(`/api/priority_names`);
     const dataPriorities = await responsePriorities.json();
     Main.setPriorityNames(dataPriorities);
 }
 
+// Pinta las opciones del select de Prioridad
 export function updatePrioritySelect() {
     let prioritySelect = document.querySelector('select[name="prioridad"]');
+    if (!prioritySelect) { return; }
 
-    if (!prioritySelect) { return; }  // No intentar actualizar el select si no existe
-
-    let priorityNames = Main.getPriorityNames();  // Obtenemos priorityNames desde el módulo principal
-    
-    priorityNames.sort((a, b) => a.level - b.level);  // Ordenar las prioridades por su nivel
+    let priorityNames = Main.getPriorityNames();
+    priorityNames.sort((a, b) => a.level - b.level); // Ordena las prioridades por su nivel
     
     prioritySelect.innerHTML = '';
     priorityNames.forEach(priority => {
@@ -85,18 +86,21 @@ export function updatePrioritySelect() {
     });
 }
 
+// Actualiza la variable de las tareas existentes en main.js desde la BBDD
 export async function updateTareas() {
     const responseTasks = await fetch(`/api/tasks`);
     const dataTasks = await responseTasks.json();
     Main.setTareas(dataTasks);
 }
 
+// Pinta las tareas en Dashboard
 export function renderTasks(tareas, priorityNames) {
     if (!taskList) return;
-
-    taskList.innerHTML = '';
+    
+    // Ordena las tareas por prioridad
     tareas = SimpleFunctions.sortTasks(tareas, true);
-
+    
+    taskList.innerHTML = '';
     tareas.forEach(tarea => {
         const taskItem = document.createElement('li');
         taskItem.classList = 'list-group-item list-group-item-dark my-2';
@@ -112,9 +116,9 @@ export function renderTasks(tareas, priorityNames) {
             </header>
             <p>${tarea.task}</p>
         `;
-
+        
+        // Pinta el boton para borrar la tarea
         const btnDelete = taskItem.querySelector('.btn-delete');
-
         btnDelete.addEventListener("click", async () => {
             const response = await fetch(`/api/tasks/${tarea.id}`, {
                 method: 'DELETE'
@@ -125,9 +129,9 @@ export function renderTasks(tareas, priorityNames) {
 
             renderTasks(tareas, priorityNames);
         });
-
+        
+        // Pinta el boton para actualizar la tarea
         const btnEdit = taskItem.querySelector('.btn-edit');
-
         btnEdit.addEventListener("click", async () => {
             const response = await fetch(`/api/tasks/${tarea.id}`);
             const data = await response.json();
@@ -138,7 +142,7 @@ export function renderTasks(tareas, priorityNames) {
             Main.setEditing(true);
             Main.setTareaId(data.id);
         });
-
+        
         taskList.append(taskItem);
     });
 }
