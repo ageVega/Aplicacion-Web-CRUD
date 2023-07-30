@@ -107,53 +107,13 @@ def delete_task(id):
     return jsonify(task)
 
 # Devuelve todos los niveles de prioridad para una casa
-@api_blueprint.route('/priority_levels', methods=['GET'])
-@login_required
-def get_priority_levels():
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-    cur.execute("SELECT * FROM priority_levels WHERE house_id = %s ORDER BY level", (current_user.id,))  # Añadir "ORDER BY level"
-
-    priority_levels = cur.fetchall()
-
-    cur.close()
-    conn.close()
-
-    return jsonify(priority_levels)
-
-# Modifica un nivel de prioridad para una casa
-@api_blueprint.route('/priority_levels/<int:id>', methods=['PUT'])
-@login_required
-def update_priority_level(id):
-    new_priority_level = request.get_json()
-    level = new_priority_level['level']
-    name = new_priority_level['name']
-
-    conn = get_connection()
-    cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    cur.execute('UPDATE priority_levels SET level = %s, name = %s WHERE id = %s AND house_id = %s RETURNING *',
-                (level, name, id, current_user.id))
-    updated_priority_level = cur.fetchone()
-
-    conn.commit()
-
-    cur.close()
-    conn.close()
-
-    if updated_priority_level is None:
-        return jsonify({'message': 'Priority level not found'}), 404
-
-    return jsonify(updated_priority_level)
-
-# Devuelve los nombres de los niveles de prioridad para una casa
 @api_blueprint.route('/priority_names', methods=['GET'])
 @login_required
 def get_priority_names():
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
-    cur.execute("SELECT * FROM priority_levels WHERE house_id = %s", (current_user.id,))
 
+    cur.execute("SELECT * FROM priority_levels WHERE house_id = %s ORDER BY level", (current_user.id,))
     priority_names = cur.fetchall()
 
     cur.close()
@@ -213,7 +173,7 @@ def reset_priority_names():
         cur.close()
         conn.close()
 
-    return get_priority_levels()
+    return get_priority_names()
 
 @api_blueprint.route('/set_weekday_priority_names', methods=['POST'])
 @login_required
@@ -243,4 +203,4 @@ def set_weekday_priority_names():
         cur.close()
         conn.close()
 
-    return get_priority_levels()
+    return get_priority_names()
