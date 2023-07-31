@@ -1,4 +1,4 @@
-# api.py
+# priorities.py
 from .connection import get_connection
 from psycopg2 import extras
 from flask import Blueprint, jsonify, request
