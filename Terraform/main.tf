@@ -55,6 +55,8 @@ variable "db_host" {}
 variable "db_database" {}
 variable "db_port" {}
 variable "db_user" {}
+variable "app_env" {}
+
 
 variable "db_password" {
   sensitive = true # Evita que el valor de la variable aparezca en la salida de la línea de comandos de Terraform
@@ -199,6 +201,7 @@ resource "aws_launch_template" "matrix_lt" {
   DB_USER=${var.db_user}
   DB_PASSWORD=${var.db_password}
   SECRET_KEY=${var.secret_key}
+  APP_ENV=${var.app_env}
   EOT
   python3 -m Aplicacion-Web-CRUD.src.app
   EOF
