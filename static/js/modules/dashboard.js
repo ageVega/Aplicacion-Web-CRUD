@@ -2,7 +2,7 @@
 import * as Main            from '../main.js'; 
 import * as SimpleFunctions from './simpleFunctions.js';
 
-// Formularios en dashboard.html        ////////////////////////////////
+// Formularios en dashboard.html
 export function taskFormSubmit(houseId) {
     const taskForm = document.querySelector('#taskForm');
     if (!taskForm) return;

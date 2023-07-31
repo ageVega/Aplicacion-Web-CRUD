@@ -2,7 +2,7 @@
 import * as Main            from '../main.js'; 
 import * as SimpleFunctions from './simpleFunctions.js';
 
-// Formularios en priority_names.html   ////////////////////////////////
+// Formularios en priority_names.html
 export function priorityNameFormUpdate(priorityNames, houseId) {
     const priorityNameForm = document.querySelector('#priorityNameForm');
     if (!priorityNameForm) return;

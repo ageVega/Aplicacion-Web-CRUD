@@ -1,6 +1,4 @@
 // simpleFunctions.js
-import * as Main from '../main.js'; 
-
 
 export function clearHouseIdOnLogout() {
     const urlPath = window.location.pathname;
@@ -27,5 +25,4 @@ export function clearPriorityNameForm() {
 
     priorityNameForm['priorityLevel'].value = '';
     priorityNameForm['priorityName'].value = '';
-    console.log('Formulario limpiado'); 
 }
