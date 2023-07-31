@@ -97,15 +97,13 @@ F1 --> Python: Select Interpreter --> .\venv\Scripts\python.exe --> New terminal
 ```bash
 $ pip install flask
 
-Instalar postgres o $ sudo apt install libpq-dev
+// Instalar postgres o $ sudo apt install libpq-dev
 
 $ pip install psycopg2 // Libreria para comunicar nuestra aplicacion python con postgres
 
 $ pip install cryptography
 
 $ pip install python-dotenv
-
-$ pip install gunicorn
 
 $ pip install waitress
 
@@ -204,8 +202,12 @@ La aproximación que vamos a seguir pasa por:
 #!/bin/bash
 # UBUNTU PYTHON AMODECASA
 sudo su -
+cd /home/ubuntu
 apt update
 apt install python3-pip -y
+apt-get install libpq-dev -y
+export PATH=$PATH:/usr/bin/pg_config
+apt-get install postgresql -y
 git clone https://github.com/ageVega/Aplicacion-Web-CRUD.git
 pip install -r Aplicacion-Web-CRUD/requirements.txt
 cat << EOT >> Aplicacion-Web-CRUD/.env
@@ -214,8 +216,9 @@ DB_DATABASE=
 DB_PORT=
 DB_USER=
 DB_PASSWORD=
+SECRET_KEY=
 EOT
-python3 Aplicacion-Web-CRUD/app.py
+python3 -m Aplicacion-Web-CRUD.src.app
 ```
 
 ### Grupo de Autoescalado

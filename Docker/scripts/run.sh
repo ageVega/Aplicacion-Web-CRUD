@@ -1,4 +1,4 @@
 #!/bin/bash
 # Iniciar Aplicacion
 
-python Aplicacion-Web-CRUD/app.py
+python -m Aplicacion-Web-CRUD.src.app
