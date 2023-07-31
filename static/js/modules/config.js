@@ -1,6 +1,6 @@
 // config.js
 
-// Formularios en config.html           ////////////////////////////////
+// Formularios en config.html
 export function deleteHouseButtonEvent() {
     const deleteHouseButton = document.getElementById('delete-house-btn');
     if (!deleteHouseButton) return;

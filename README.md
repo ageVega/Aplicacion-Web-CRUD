@@ -22,7 +22,7 @@ Tutorial: https://www.youtube.com/watch?v=Qqgry8mezC8&t=7506s
 
 3. $ python -m src.app
 
-4. Acceder a través de http://<ip>:8080
+4. Acceder a través de http://&lt;ip&gt;:8080
 
 # Llamadas a la API
 
