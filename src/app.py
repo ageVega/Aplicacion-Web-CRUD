@@ -10,7 +10,7 @@ from flask_login import current_user, login_required
 load_dotenv()  # Carga las variables de entorno desde .env
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
-app.secret_key = environ.get('SECRET_KEY')  # Se utiliza para cifrar las cookies de sesión del usuario, Flask-Login utiliza estas cookies para recordar a los usuarios entre solicitudes.
+app.secret_key = environ.get('SECRET_KEY')  # Cifra las cookies de sesión del usuario, Flask-Login utiliza estas cookies para recordar a los usuarios entre solicitudes.
 
 app.register_blueprint(login_blueprint, url_prefix='/auth')
 app.register_blueprint(tasks_blueprint, url_prefix='/api')

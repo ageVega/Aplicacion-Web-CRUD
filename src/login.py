@@ -32,7 +32,7 @@ def register():
         if error:
             return jsonify({'message': error}), 400
 
-        return redirect(url_for('home'))  # Redirige a la ruta principal al registrarse
+        return redirect(url_for('home'))  # Redirige a la página principal al registrarse
     else:
         return render_template('register.html')
 

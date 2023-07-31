@@ -4,7 +4,6 @@ from psycopg2 import extras
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 
-# Define un Blueprint para la API. Un Blueprint es un conjunto de rutas que pueden ser registradas en una aplicación Flask.
 priorities_blueprint = Blueprint('priorities', __name__)
 
 # Devuelve todos los niveles de prioridad para una casa

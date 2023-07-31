@@ -50,7 +50,7 @@ def create_house(house_name, password):
                     (house_name, hashed_password))
         house_data = cur.fetchone()
         conn.commit()
-        create_default_priorities(house_data['id'])  # Aquí se llama a la función
+        create_default_priorities(house_data['id'])
     except Exception as e:
         conn.rollback()
         return None, str(e)
