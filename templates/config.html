@@ -21,10 +21,17 @@
 
 {% block main %}
 <div class="col-md-6 offset-md-3">
-    <h1 class="text-center mb-4">Configuración de la cuenta</h1>
-    <!-- Opciones de configuración -->
-    <div class="card card-body text-white" style="background-color: #202020;">
-        <button id="delete-house-btn" data-house-id="{{current_user.id}}" class="btn btn-danger">Eliminar casa</button>
+    <h1 class="text-center">Configuración de la cuenta</h1>
+    <div class="card card-body text-white mt-2" style="background-color: #202020;">
+        <div class="row">
+            <div class="col pr-1">
+                <a href="/change_password" class="btn btn-primary w-100">Cambiar contraseña</a>
+            </div>
+            <div class="col pl-1">
+                <button id="delete-house-btn" data-house-id="{{current_user.id}}" class="btn btn-danger w-100">Eliminar casa</button>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
+
