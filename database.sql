@@ -5,7 +5,7 @@ CREATE TABLE houses (
     password VARCHAR(255) NOT NULL
 );
 
--- Crea después la tabla tasks, puede dar error si no se crean por separado
+-- Crea después las tablas dependientes de houses, puede dar error si no se crean por separado
 CREATE TABLE tasks (
     id SERIAL PRIMARY KEY,
     task VARCHAR(255) NOT NULL,
