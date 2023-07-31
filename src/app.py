@@ -19,7 +19,6 @@ app.register_blueprint(priorities_blueprint, url_prefix='/priorities')
 login_manager.init_app(app)
 login_manager.login_view = "auth.login"  # Establece la vista de inicio de sesión
 
-
 @app.route('/')
 def index():
     return redirect(url_for('home'))
@@ -49,12 +48,10 @@ def config():
     return render_template('config.html', house_name=house_name)
 
 
-"""
-if __name__ == "__main__":
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=8080)
-
-"""
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    env = environ.get('APP_ENV')  
+    if env == 'prod':
+        from waitress import serve
+        serve(app, host="0.0.0.0", port=8080)
+    elif env == 'dev':
+        app.run(debug=True)
