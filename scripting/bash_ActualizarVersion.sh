@@ -18,7 +18,3 @@ VERSION_ACTUALIZADA=$(git tag -l 'v*' | sort -V | tail -n 1 | sed 's/^v//' | whi
 git tag -a $VERSION_ACTUALIZADA -m "$VERSION_ACTUALIZADA"
 
 git push origin $VERSION_ACTUALIZADA
-
-
-
-
