@@ -20,7 +20,11 @@
 {% endblock %}
 
 {% block main %}
+<div class="col-md-6 offset-md-3">
     <h1 class="text-center mb-4">Configuración de la cuenta</h1>
     <!-- Opciones de configuración -->
-    <button id="delete-house-btn" data-house-id="{{current_user.id}}" class="btn btn-danger mt-4">Eliminar casa</button>
+    <div class="card card-body text-white" style="background-color: #202020;">
+        <button id="delete-house-btn" data-house-id="{{current_user.id}}" class="btn btn-danger">Eliminar casa</button>
+    </div>
+</div>
 {% endblock %}
