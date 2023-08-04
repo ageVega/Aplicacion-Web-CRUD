@@ -1,8 +1,8 @@
 // main.js
-import * as SimpleFunctions from './modules/simpleFunctions.js';
-import * as Dashboard       from './modules/dashboard.js';
-import * as PriorityNames   from './modules/priority_names.js';
-import * as Config          from './modules/config.js';
+import * as SimpleFunctions     from './modules/simpleFunctions.js';
+import * as Dashboard           from './modules/dashboard.js';
+import * as PriorityNames       from './modules/priority_names.js';
+import * as ConfirmDeleteHouse  from './modules/confirm_delete_house.js';
 
 export const houseId = sessionStorage.getItem('house_id');
 
@@ -45,7 +45,7 @@ export function setTareaId(value) {
 
 // Inicializa los formularios de la aplicacion
 async function initializeEventListeners() {
-    Config.deleteHouseButtonEvent();
+    ConfirmDeleteHouse.deleteHouseButtonEvent();
 
     Dashboard.taskFormSubmit(houseId);
 

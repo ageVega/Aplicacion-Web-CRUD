@@ -47,6 +47,18 @@ def config():
     house_name = session.get('house_name', 'Invitado')
     return render_template('config.html', house_name=house_name)
 
+@app.route('/change_password')
+@login_required
+def change_password():
+    house_name = session.get('house_name', 'Invitado')
+    return render_template('change_password.html', house_name=house_name)
+
+@app.route('/confirm_delete_house')
+@login_required
+def confirm_delete_house():
+    house_name = session.get('house_name', 'Invitado')
+    return render_template('confirm_delete_house.html', house_name=house_name)
+
 
 if __name__ == '__main__':
     env = environ.get('APP_ENV')  

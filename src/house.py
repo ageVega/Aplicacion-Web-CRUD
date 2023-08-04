@@ -45,6 +45,11 @@ def create_house(house_name, password):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
 
+    # Primero verificamos si la casa ya existe
+    cur.execute('SELECT * FROM houses WHERE house_name = %s', (house_name,))
+    if cur.fetchone():
+        return None, "Lo sentimos, ese nombre ya está cogido :("
+    
     try:
         cur.execute('INSERT INTO houses (house_name, password) VALUES (%s, %s) RETURNING id, house_name, password', 
                     (house_name, hashed_password))
@@ -59,6 +64,23 @@ def create_house(house_name, password):
     conn.close()
 
     return House(house_data['id'], house_data['house_name'], house_data['password']), None
+
+def update_password(house_id, new_password):
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        cur.execute('UPDATE houses SET password = %s WHERE id = %s', (new_password, house_id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print("Error al actualizar la contraseña: ", str(e))
+        return False
+
+    cur.close()
+    conn.close()
+
+    return True
 
 def create_default_priorities(house_id):
     default_priorities = [

@@ -32,8 +32,7 @@ export function taskFormSubmit(houseId) {
             });
             const newTask = await response.json();
 
-            tareas.push(newTask);
-            Main.setTareas(tareas);
+            await updateTareas();
         } else {
             const response = await fetch(`/api/tasks/${tareaId}`, {
                 method: 'PUT',
@@ -51,7 +50,8 @@ export function taskFormSubmit(houseId) {
             editing = false;
             tareaId = null;
 
-            Main.setTareas(tareas);
+            await updateTareas();
+            
             Main.setEditing(editing);
             Main.setTareaId(tareaId);
         }
