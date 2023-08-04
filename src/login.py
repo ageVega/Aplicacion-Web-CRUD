@@ -46,7 +46,7 @@ def change_password():
     # Verifica si la contraseña antigua es correcta
     if check_password_hash(house.password, old_password):
         # Verificar que la nueva contraseña no sea igual a la antigua
-        if check_password_hash(house.password, new_password):
+        if old_password == new_password:
             flash('La nueva contraseña debe ser diferente a la antigua', 'danger')
             return redirect(url_for('change_password'))
 
