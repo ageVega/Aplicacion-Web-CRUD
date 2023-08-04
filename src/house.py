@@ -60,6 +60,25 @@ def create_house(house_name, password):
 
     return House(house_data['id'], house_data['house_name'], house_data['password']), None
 
+def update_password(house_id, new_password):
+    hashed_password = generate_password_hash(new_password)
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        cur.execute('UPDATE houses SET password = %s WHERE id = %s', (hashed_password, house_id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print("Error al actualizar la contraseña: ", str(e))
+        return False
+
+    cur.close()
+    conn.close()
+
+    return True
+
 def create_default_priorities(house_id):
     default_priorities = [
         (1, 'Crítica'),
