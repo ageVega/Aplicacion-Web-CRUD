@@ -4,8 +4,7 @@ from .house import House, get_house_by_id, get_house_by_house_name, create_house
 from psycopg2 import extras
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from werkzeug.security import check_password_hash
-from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # Crea una instancia de LoginManager, que maneja el proceso de autenticación de usuarios.
 login_manager = LoginManager()
@@ -112,7 +111,6 @@ def login():
     else:
         return render_template('login.html')  # Devuelve la página de login si la solicitud es GET
 
-
 @login_blueprint.route('/logout')
 @login_required
 def logout():
@@ -141,3 +139,20 @@ def delete_house(house_id):
 
     logout_user()
     return jsonify({'message': 'Casa eliminada correctamente'}), 200
+
+@login_blueprint.route('/confirm_password/<int:house_id>', methods=['POST'])
+@login_required
+def confirm_password(house_id):
+    if house_id != current_user.id:
+        return jsonify({'message': 'No puedes confirmar la contraseña de otra casa'}), 400
+
+    password = request.json.get('password')
+    
+    house = get_house_by_id(house_id)
+    if house is None:
+        return jsonify({'message': 'La casa no existe'}), 400
+
+    if not check_password_hash(house.password, password):
+        return jsonify({'message': 'Contraseña incorrecta'}), 400
+
+    return jsonify({'message': 'Contraseña correcta'}), 200
