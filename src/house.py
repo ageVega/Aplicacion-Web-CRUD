@@ -45,6 +45,11 @@ def create_house(house_name, password):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=extras.RealDictCursor)
 
+    # Primero verificamos si la casa ya existe
+    cur.execute('SELECT * FROM houses WHERE house_name = %s', (house_name,))
+    if cur.fetchone():
+        return None, "Lo sentimos, ese nombre ya está cogido :("
+    
     try:
         cur.execute('INSERT INTO houses (house_name, password) VALUES (%s, %s) RETURNING id, house_name, password', 
                     (house_name, hashed_password))

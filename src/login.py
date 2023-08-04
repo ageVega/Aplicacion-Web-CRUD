@@ -76,7 +76,8 @@ def register():
 
         house, error = create_house(house_name, password)
         if error:
-            return jsonify({'message': error}), 400
+            flash(error, "danger")  # Mostrará "La casa ya existe" si la casa ya existe
+            return redirect(url_for('auth.register'))
 
         return redirect(url_for('home'))  # Redirige a la página principal al registrarse
     else:
